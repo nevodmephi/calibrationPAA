@@ -1,198 +1,198 @@
 #include "teksettings.h"
 
-tekSettings::tekSettings(tekModule *mod, const QString &title, QWidget *parent)
-	: QGroupBox(title,parent),_module(mod)	{
+TekSettings::TekSettings(tekModule *mod, const QString &title, QWidget *parent)
+	: QGroupBox(title,parent),module_(mod)	{
 	createWidgets();
 	createLayouts();
-	channel = 0;
+	channel_ = 0;
 }
 
-tekSettings::~tekSettings()	{
-	disconnect(leftFrontL,	&QLineEdit::editingFinished,
-			   this,		&tekSettings::setLeftFront);
-	disconnect(rightFrontL,	&QLineEdit::editingFinished,
-			   this,		&tekSettings::setRightFront);
-	disconnect(intervalL,	&QLineEdit::editingFinished,
-			   this,		&tekSettings::setInterval);
-	disconnect(widthL,		&QLineEdit::editingFinished,
-			   this,		&tekSettings::setWidth);
-	disconnect(highLevelL,	&QLineEdit::editingFinished,
-			this,			&tekSettings::setHighLevel);
-	disconnect(lowLevelL,	&QLineEdit::editingFinished,
-			this,			&tekSettings::setLowLevel);
-	disconnect(channelOneC,	&QRadioButton::clicked,
-			   this,		&tekSettings::setChannel);
-	disconnect(channelTwoC,	&QRadioButton::clicked,
-			   this,		&tekSettings::setChannel);
+TekSettings::~TekSettings()	{
+	disconnect(leftFrontL_,	&QLineEdit::editingFinished,
+			   this,		&TekSettings::setLeftFront);
+	disconnect(rightFrontL_,	&QLineEdit::editingFinished,
+			   this,		&TekSettings::setRightFront);
+	disconnect(intervalL_,	&QLineEdit::editingFinished,
+			   this,		&TekSettings::setInterval);
+	disconnect(widthL_,		&QLineEdit::editingFinished,
+			   this,		&TekSettings::setWidth);
+	disconnect(highLevelL_,	&QLineEdit::editingFinished,
+			this,			&TekSettings::setHighLevel);
+	disconnect(lowLevelL_,	&QLineEdit::editingFinished,
+			this,			&TekSettings::setLowLevel);
+	disconnect(channelOneC_,	&QRadioButton::clicked,
+			   this,		&TekSettings::setChannel);
+	disconnect(channelTwoC_,	&QRadioButton::clicked,
+			   this,		&TekSettings::setChannel);
 
-	for (int i = 0; i < (signed)chipChannel.size(); i++)
-		delete chipChannel[i];
-	delete  leftFrontL;
-	delete  rightFrontL;
-	delete  intervalL;
-	delete  widthL;
-	delete	ampStartL;
-	delete	ampEndL;
-	delete	ampStepL;
-	delete	layout;
-	delete	chipLayout;
-	delete  mainLayout;
+	for (int i = 0; i < (signed)chipChannel_.size(); i++)
+		delete chipChannel_[i];
+	delete  leftFrontL_;
+	delete  rightFrontL_;
+	delete  intervalL_;
+	delete  widthL_;
+	delete	ampStartL_;
+	delete	ampEndL_;
+	delete	ampStepL_;
+	delete	layout_;
+	delete	chipLayout_;
+	delete  mainLayout_;
 }
 
-void tekSettings::createWidgets()	{
-	leftFrontL		= new QLineEdit("0", this);
-	rightFrontL		= new QLineEdit("0", this);
-	intervalL		= new QLineEdit("0", this);
-	widthL			= new QLineEdit("0", this);
-	highLevelL		= new QLineEdit("0", this);
-	lowLevelL		= new QLineEdit("0", this);
-	ampStartL		= new QLineEdit("0", this);
-	ampEndL			= new QLineEdit("0", this);
-	ampStepL		= new QLineEdit("0", this);
-	channelOneC		= new QRadioButton(this);
-	channelTwoC		= new QRadioButton(this);
+void TekSettings::createWidgets()	{
+	leftFrontL_		= new QLineEdit("0", this);
+	rightFrontL_		= new QLineEdit("0", this);
+	intervalL_		= new QLineEdit("0", this);
+	widthL_			= new QLineEdit("0", this);
+	highLevelL_		= new QLineEdit("0", this);
+	lowLevelL_		= new QLineEdit("0", this);
+	ampStartL_		= new QLineEdit("0", this);
+	ampEndL_			= new QLineEdit("0", this);
+	ampStepL_		= new QLineEdit("0", this);
+	channelOneC_		= new QRadioButton(this);
+	channelTwoC_		= new QRadioButton(this);
 
 	for (int i = 0; i < 4; i++)
-		chipChannel.push_back(new QCheckBox(QString::number(i + 1), this));
+		chipChannel_.push_back(new QCheckBox(QString::number(i + 1), this));
 
-	connect(leftFrontL,	&QLineEdit::editingFinished,
-			this,		&tekSettings::setLeftFront);
-	connect(rightFrontL,&QLineEdit::editingFinished,
-			this,		&tekSettings::setRightFront);
-	connect(intervalL,	&QLineEdit::editingFinished,
-			this,		&tekSettings::setInterval);
-	connect(widthL,		&QLineEdit::editingFinished,
-			this,		&tekSettings::setWidth);
-	connect(highLevelL,	&QLineEdit::editingFinished,
-			this,		&tekSettings::setHighLevel);
-	connect(lowLevelL,	&QLineEdit::editingFinished,
-			this,		&tekSettings::setLowLevel);
-	connect(channelOneC,&QRadioButton::clicked,
-			this,		&tekSettings::setChannel);
-	connect(channelTwoC,&QRadioButton::clicked,
-			this,		&tekSettings::setChannel);
-	channelOneC->setChecked(true);
+	connect(leftFrontL_,	&QLineEdit::editingFinished,
+			this,		&TekSettings::setLeftFront);
+	connect(rightFrontL_,&QLineEdit::editingFinished,
+			this,		&TekSettings::setRightFront);
+	connect(intervalL_,	&QLineEdit::editingFinished,
+			this,		&TekSettings::setInterval);
+	connect(widthL_,		&QLineEdit::editingFinished,
+			this,		&TekSettings::setWidth);
+	connect(highLevelL_,	&QLineEdit::editingFinished,
+			this,		&TekSettings::setHighLevel);
+	connect(lowLevelL_,	&QLineEdit::editingFinished,
+			this,		&TekSettings::setLowLevel);
+	connect(channelOneC_,&QRadioButton::clicked,
+			this,		&TekSettings::setChannel);
+	connect(channelTwoC_,&QRadioButton::clicked,
+			this,		&TekSettings::setChannel);
+	channelOneC_->setChecked(true);
 	setChannel();
 }
 
-void tekSettings::createLayouts()	{
-	layout				= new QFormLayout;
-	layout->addRow(tr("Channel One"),channelOneC);
-	layout->addRow(tr("Channel Two"),channelTwoC);
-	layout->addRow(tr("Left Front"),leftFrontL);
-	layout->addRow(tr("Right Front"),rightFrontL);
-	layout->addRow(tr("Interval"),intervalL);
-	layout->addRow(tr("Width"),widthL);
-	layout->addRow(tr("High Level"),highLevelL);
-	layout->addRow(tr("Low Level"),lowLevelL);
-	layout->addRow(tr("Start Level"), ampStartL);
-	layout->addRow(tr("End Level"), ampEndL);
-	layout->addRow(tr("Step Level"), ampStepL);
-	chipLayout			= new QVBoxLayout;
-	for (int i = 0; i < (signed)chipChannel.size(); i++)
-		chipLayout->addWidget(chipChannel[i]);
-	mainLayout			= new QHBoxLayout;
-	mainLayout->addLayout(layout);
-	mainLayout->addLayout(chipLayout);
-	setLayout(mainLayout);
+void TekSettings::createLayouts()	{
+	layout_				= new QFormLayout;
+	layout_->addRow(tr("Channel One"),channelOneC_);
+	layout_->addRow(tr("Channel Two"),channelTwoC_);
+	layout_->addRow(tr("Left Front"),leftFrontL_);
+	layout_->addRow(tr("Right Front"),rightFrontL_);
+	layout_->addRow(tr("Interval"),intervalL_);
+	layout_->addRow(tr("Width"),widthL_);
+	layout_->addRow(tr("High Level"),highLevelL_);
+	layout_->addRow(tr("Low Level"),lowLevelL_);
+	layout_->addRow(tr("Start Level"), ampStartL_);
+	layout_->addRow(tr("End Level"), ampEndL_);
+	layout_->addRow(tr("Step Level"), ampStepL_);
+	chipLayout_			= new QVBoxLayout;
+	for (int i = 0; i < (signed)chipChannel_.size(); i++)
+		chipLayout_->addWidget(chipChannel_[i]);
+	mainLayout_			= new QHBoxLayout;
+	mainLayout_->addLayout(layout_);
+	mainLayout_->addLayout(chipLayout_);
+	setLayout(mainLayout_);
 }
 
-void tekSettings::update(const Subject *subject)	{
-	if(subject == _module)	{
+void TekSettings::update(const Subject *subject)	{
+	if(subject == module_)	{
 		updateSettings();
 	}
 }
 
-void tekSettings::updateSettings()	{
+void TekSettings::updateSettings()	{
 	int val;
 
 	int countCheck = 0;
-	for (auto check : chipChannel)
+	for (auto check : chipChannel_)
 		if (check->isChecked() == true)
 			countCheck++;
 	if (countCheck != 2)
 		return;
 
-	if( _module->getWidth(val) )
-		widthL->setText(QString::number(val,10));
-	if( _module->getHighLevel(val) )
-		highLevelL->setText(QString::number(val,10));
-	if( _module->getLowLevel(val) )
-		lowLevelL->setText(QString::number(val,10));
-	if( _module->getLeftFront(val) )
-		leftFrontL->setText(QString::number(val,10));
-	if( _module->getRightFront(val) )
-		rightFrontL->setText(QString::number(val,10));
-	if( _module->getInterval(val) )
-		intervalL->setText(QString::number(val,10));
+	if( module_->getWidth(val) )
+		widthL_->setText(QString::number(val,10));
+	if( module_->getHighLevel(val) )
+		highLevelL_->setText(QString::number(val,10));
+	if( module_->getLowLevel(val) )
+		lowLevelL_->setText(QString::number(val,10));
+	if( module_->getLeftFront(val) )
+		leftFrontL_->setText(QString::number(val,10));
+	if( module_->getRightFront(val) )
+		rightFrontL_->setText(QString::number(val,10));
+	if( module_->getInterval(val) )
+		intervalL_->setText(QString::number(val,10));
 }
 
-void tekSettings::setChannel()	{
-	if(channel == getCurrentChannel() ) return;
-	channel = getCurrentChannel();
-	_module->setChannel( channel );
-	_module->notify();
+void TekSettings::setChannel()	{
+	if(channel_ == getCurrentChannel() ) return;
+	channel_ = getCurrentChannel();
+	module_->setChannel( channel_ );
+	module_->notify();
 }
 
-void tekSettings::setLeftFront()	{
-	_module->setLeftFront( leftFrontL->text().toInt() );
-	_module->notify();
+void TekSettings::setLeftFront()	{
+	module_->setLeftFront( leftFrontL_->text().toInt() );
+	module_->notify();
 }
 
-void tekSettings::setRightFront()	{
-	_module->setRightFront( rightFrontL->text().toInt() );
-	_module->notify();
+void TekSettings::setRightFront()	{
+	module_->setRightFront( rightFrontL_->text().toInt() );
+	module_->notify();
 }
 
-void tekSettings::setInterval()	{
-	_module->setInterval( intervalL->text().toInt() );
-	_module->notify();
+void TekSettings::setInterval()	{
+	module_->setInterval( intervalL_->text().toInt() );
+	module_->notify();
 }
 
-void tekSettings::setWidth()	{
-	_module->setWidth( widthL->text().toInt() );
-	_module->notify();
+void TekSettings::setWidth()	{
+	module_->setWidth( widthL_->text().toInt() );
+	module_->notify();
 }
 
-void tekSettings::setHighLevel()	{
-	_module->setHighLevel( highLevelL->text().toInt() );
-	_module->notify();
+void TekSettings::setHighLevel()	{
+	module_->setHighLevel( highLevelL_->text().toInt() );
+	module_->notify();
 }
 
-void tekSettings::setLowLevel()	{
-	_module->setLowLevel( lowLevelL->text().toInt() );
-	_module->notify();
+void TekSettings::setLowLevel()	{
+	module_->setLowLevel( lowLevelL_->text().toInt() );
+	module_->notify();
 }
 
-void tekSettings::setSettings()	{
-	_module->setRightFront	( rightFrontL->text().toInt() );
-	_module->setLeftFront	( leftFrontL->text().toInt() );
-	_module->setHighLevel	( highLevelL->text().toInt() );
-	_module->setLowLevel	( lowLevelL->text().toInt() );
-	_module->setInterval	( intervalL->text().toInt() );
-	_module->setWidth		( widthL->text().toInt() );
+void TekSettings::setSettings()	{
+	module_->setRightFront	( rightFrontL_->text().toInt() );
+	module_->setLeftFront	( leftFrontL_->text().toInt() );
+	module_->setHighLevel	( highLevelL_->text().toInt() );
+	module_->setLowLevel	( lowLevelL_->text().toInt() );
+	module_->setInterval	( intervalL_->text().toInt() );
+	module_->setWidth		( widthL_->text().toInt() );
 
 }
 
-void tekSettings::readSettings()	{
-	highLevelL->	setText(QString::number(_module->getSettgins().highLevel));
-	lowLevelL->		setText(QString::number(_module->getSettgins().lowLevel));
-	intervalL->		setText(QString::number(_module->getSettgins().interval));
-	widthL->		setText(QString::number(_module->getSettgins().width));
-	leftFrontL->	setText(QString::number(_module->getSettgins().leftFront));
-	rightFrontL->	setText(QString::number(_module->getSettgins().rightFront));
+void TekSettings::readSettings()	{
+	highLevelL_->	setText(QString::number(module_->getSettgins().highLevel));
+	lowLevelL_->		setText(QString::number(module_->getSettgins().lowLevel));
+	intervalL_->		setText(QString::number(module_->getSettgins().interval));
+	widthL_->		setText(QString::number(module_->getSettgins().width));
+	leftFrontL_->	setText(QString::number(module_->getSettgins().leftFront));
+	rightFrontL_->	setText(QString::number(module_->getSettgins().rightFront));
 }
 
-int tekSettings::getCurrentChannel()	{
-	if(channelOneC->isChecked()) return 0;
-	if(channelTwoC->isChecked()) return 1;
+int TekSettings::getCurrentChannel()	{
+	if(channelOneC_->isChecked()) return 0;
+	if(channelTwoC_->isChecked()) return 1;
 	return -1;
 }
 
-tekSettings::charVec tekSettings::getChipChannel()	const	{
+TekSettings::charVec TekSettings::getChipChannel()	const	{
 	std::vector<char> result(4);
-	for (int i = 0; i < (signed)chipChannel.size(); i++)
-		if (chipChannel[i]->isChecked() == true)
+	for (int i = 0; i < (signed)chipChannel_.size(); i++)
+		if (chipChannel_[i]->isChecked() == true)
 			result[i] = '1';
 		else
 			result[i] = '0';

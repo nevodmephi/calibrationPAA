@@ -9,14 +9,14 @@
 
 #include "src/tekVisa/tektypes.h"
 
-class processing	{
+class Processing	{
 public:
 	using	int32Vec	=	std::vector<int32_t>;
 	using	string		=	std::string;
 	using	homingData	=	std::array< std::array< int, 4>, 4>;
 
-	explicit processing();
-	~processing();
+	explicit Processing();
+	~Processing();
 
 	struct	factorTransformation
 	{
@@ -46,16 +46,16 @@ public:
 	void	setPathToFile(const string& pathToSaveInput);
 	void	setChipChannel(int chipGroupChannel);
 	const homingData&	returnHoming()	const;
-	const dataChip&		returnData()	const;
+	const DataChip&		returnData()	const;
 
 private:
-	dataChip	data;
-	homingData	homing;
-	int32Vec	vecX;
-	int32Vec	vecFirst;
-	int32Vec	vecSecond;
-	string      pathToSave;
-	int			howChipChannel;
+	DataChip	data_;
+	homingData	homing_;
+	int32Vec	vecX_;
+	int32Vec	vecFirst_;
+	int32Vec	vecSecond_;
+	string      pathToSave_;
+	int			howChipChannel_;
 };
 
 #endif // PROCESSING_H

@@ -11,11 +11,11 @@
 #include <ctime>
 
 #include "../observer/observer.h"
-#include "tekmodule.h"
+#include "genmodule.h"
 #include "chip/blocks.h"
 #include "processing.h"
 
-class chipModule : public Subject	{
+class ChipModule : public Subject	{
 public:
 	using	string		=	std::string;
 	using	int32Vec	=	std::vector<int>;
@@ -25,11 +25,9 @@ public:
 	using	mapCRIter	=	std::map<int, std::array<int, 2>>::const_reverse_iterator;
 	using	pairVec		=	std::vector<std::pair<int, int>>;
 
-	enum class interest
-	{statusUpdate};
 	enum class mode
 	{amp, form};
-	explicit	chipModule(genModule *tekMod, processing*  calculation);
+	explicit	ChipModule(GenModule *tekMod, Processing*  calculation);
 
 	bool		openSession();
 	void		closeSession();
@@ -62,14 +60,14 @@ private:
 	int			searchThresh();
 	void		readFromFileAmp();
 
-	genModule*				_module;
-	processing*				_calculation;
+	GenModule*				_module;
+	Processing*				_calculation;
 	int32Pair				_howChipChannel;
 	int						_groupChannel;
 	int						_thresh[NCLAST * NDET];
 	calibrMap				_calibr;
 	pairVec					_threshList;
-	calibrSettings_t		_settings[2];
+	CalibrSettings_t		_settings[2];
 	mode					_activeMode;
 	bool					_stopFlag;
 	bool					_dataUpdate;

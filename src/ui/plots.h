@@ -10,14 +10,14 @@
 #include "../tekVisa/chipmodule.h"
 #include "qcustomplot.h"
 
-class plotsOutput : public QWidget, public Observer	{
+class Plots : public QWidget, public Observer	{
 	Q_OBJECT
 
 public:
 	using	qvecdoubPair	=	std::pair<QVector<double>,	QVector<double>>;
 
-	explicit plotsOutput(chipModule *chip, QWidget *parent = nullptr);
-	~plotsOutput();
+	explicit Plots(ChipModule *chip, QWidget *parent = nullptr);
+	~Plots();
 
 	void	update(const Subject *subject);
 	void	allClear();
@@ -36,17 +36,17 @@ protected:
 	void	createForm();
 
 private:
-	chipModule*		_chip;
-	QCustomPlot*	_ampFirst;
-	QCustomPlot*	_ampSecond;
-	QCustomPlot*	_form;
-	qvecdoubPair	_ampFirstData;
-	qvecdoubPair	_ampSecondData;
-	qvecdoubPair	_formData;
+	ChipModule*		chip_;
+	QCustomPlot*	ampFirst_;
+	QCustomPlot*	ampSecond_;
+	QCustomPlot*	form_;
+	qvecdoubPair	ampFirstData_;
+	qvecdoubPair	ampSecondData_;
+	qvecdoubPair	formData_;
 
-	QHBoxLayout*	_ampHLayout;
-	QVBoxLayout*	_formVLayout;
-	QCheckBox*		_isRescaleButton;
+	QHBoxLayout*	ampHLayout_;
+	QVBoxLayout*	formVLayout_;
+	QCheckBox*		isRescaleButton_;
 };
 
 #endif // PLOTS_H

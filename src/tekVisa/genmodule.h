@@ -10,17 +10,14 @@
 #include "src/observer/observer.h"
 #include "tektypes.h"
 
-#include "chip/defines.h"
+//#include "chip/defines.h"
 
-class genModule : public Subject	{
+class GenModule : public Subject	{
 public:
 	using	string			=	std::string;
 	using	stringstream	=	std::stringstream;
 
-	enum class interest
-	{statusUpdate};
-
-	genModule();
+	GenModule();
 	bool openSession();
 	bool closeSession();
 	bool setPing(int ping);
@@ -44,16 +41,16 @@ public:
 	bool getLowLevel(int val);
 	int  getChannelActive()	const;
 
-	string		whoYou();
+	string		whoAreYou();
 
 	ViSession	resMN()		const;
 	ViSession	session()	const;
-	const genSettings_t &getSettgins() const;
+	const GenSettings_t &getSettgins() const;
 
-	std::string decodeAction(genActions op) const;
+	std::string decodeAction(GenActions op) const;
 
 protected:
-	void	 pushAction(genActions action,ViStatus status);
+	void	 pushAction(GenActions action,ViStatus status);
 	ViStatus write(const string &text) const;
 	ViStatus read(const string &request, string &answer);
 	void	setChannelSettings();
@@ -61,11 +58,11 @@ protected:
 
 private:
 	bool			active;
-	ViSession		_resMN;
-	ViSession		_session;
-	ViFindList		_mainFList;
-	int				_channel;
-	genSettings_t	settings[2];
+	ViSession		resMN_;
+	ViSession		session_;
+	ViFindList		mainFList_;
+	int				channel_;
+	GenSettings_t	settings[2];
 };
 
 #endif // INTERLOCUTOR_H

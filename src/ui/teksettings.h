@@ -10,19 +10,19 @@
 #include <QLineEdit>
 
 #include "../observer/observer.h"
-#include "../tekVisa/tekmodule.h"
+#include "../tekVisa/genmodule.h"
 #include "../tekVisa/chipmodule.h"
 #include "types.hpp"
 
-class tekSettings : public QGroupBox, public Observer	{
+class TekSettings : public QGroupBox, public Observer	{
 	Q_OBJECT
 
 public:
 	using	charVec	=	std::vector<char>;
 
-	explicit tekSettings(tekModule *mod,const QString &title, QWidget *parent = nullptr);
-	~tekSettings();
-	int		currentChannel () {return channel;}
+	explicit TekSettings(tekModule *mod,const QString &title, QWidget *parent = nullptr);
+	~TekSettings();
+	int		currentChannel () {return channel_;}
 	void	update(const Subject *subject);
 
 	void	setHighLevel();
@@ -46,27 +46,27 @@ protected:
 	void	updateSettings();
 
 private:
-	tekModule	*_module;
-	chipModule	*_chip;
-	int			channel;
+	tekModule	*module_;
+	ChipModule	*chip_;
+	int			channel_;
 
-	QFormLayout	*layout;
-	QHBoxLayout	*mainLayout;
-	QVBoxLayout	*chipLayout;
+	QFormLayout	*layout_;
+	QHBoxLayout	*mainLayout_;
+	QVBoxLayout	*chipLayout_;
 
-	QRadioButton	*channelOneC;
-	QRadioButton	*channelTwoC;
-	std::vector<QCheckBox*>	chipChannel;
+	QRadioButton	*channelOneC_;
+	QRadioButton	*channelTwoC_;
+	std::vector<QCheckBox*>	chipChannel_;
 
-	QLineEdit	*leftFrontL;
-	QLineEdit	*rightFrontL;
-	QLineEdit	*intervalL;
-	QLineEdit	*widthL;
-	QLineEdit	*lowLevelL;
-	QLineEdit	*highLevelL;
-	QLineEdit	*ampStartL;
-	QLineEdit	*ampEndL;
-	QLineEdit	*ampStepL;
+	QLineEdit	*leftFrontL_;
+	QLineEdit	*rightFrontL_;
+	QLineEdit	*intervalL_;
+	QLineEdit	*widthL_;
+	QLineEdit	*lowLevelL_;
+	QLineEdit	*highLevelL_;
+	QLineEdit	*ampStartL_;
+	QLineEdit	*ampEndL_;
+	QLineEdit	*ampStepL_;
 };
 
 #endif // TEKSETTINGS_H

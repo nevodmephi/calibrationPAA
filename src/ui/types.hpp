@@ -3,7 +3,7 @@
 
 #include "src/tekVisa/tektypes.h"
 
-typedef genModule tekModule;
-typedef actionInfo_s actionInfo_s;
+typedef GenModule tekModule;
+typedef ActionInfo_s ActionInfo_s;
 
 #endif // UI_TYPES_HPP

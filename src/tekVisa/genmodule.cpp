@@ -1,54 +1,54 @@
-#include "tekmodule.h"
+#include "genmodule.h"
 
-genModule::genModule()	{
+GenModule::GenModule()	{
 	active = false;
-	_channel = 0;
+	channel_ = 0;
 	setDefaultSettings(0);
 	setDefaultSettings(1);
 	loadSettigs();
 }
 
-void genModule::setChannel(int channel)	{
-	_channel = channel;
+void GenModule::setChannel(int channel)	{
+	channel_ = channel;
 //	setChannelSettings();
 }
 
-void genModule::setChannelSettings()	{
-	setWidth(settings[_channel].width);
-	setHighLevel(settings[_channel].highLevel);
-	setLowLevel(settings[_channel].lowLevel);
-	setInterval(settings[_channel].interval);
-	setRightFront(settings[_channel].rightFront);
-	setLeftFront(settings[_channel].leftFront);
+void GenModule::setChannelSettings()	{
+	setWidth(settings[channel_].width);
+	setHighLevel(settings[channel_].highLevel);
+	setLowLevel(settings[channel_].lowLevel);
+	setInterval(settings[channel_].interval);
+	setRightFront(settings[channel_].rightFront);
+	setLeftFront(settings[channel_].leftFront);
 	loadSettigs();
 }
 
-void genModule::loadSettigs()	{
-	getWidth(settings[_channel].width);
-	getHighLevel(settings[_channel].highLevel);
-	getLowLevel(settings[_channel].lowLevel);
-	getInterval(settings[_channel].interval);
-	getRightFront(settings[_channel].rightFront);
-	getLeftFront(settings[_channel].leftFront);
+void GenModule::loadSettigs()	{
+	getWidth(settings[channel_].width);
+	getHighLevel(settings[channel_].highLevel);
+	getLowLevel(settings[channel_].lowLevel);
+	getInterval(settings[channel_].interval);
+	getRightFront(settings[channel_].rightFront);
+	getLeftFront(settings[channel_].leftFront);
 }
 
-bool genModule::openSession()	{
+bool GenModule::openSession()	{
 	ViStatus status;
 	ViUInt32 numInit;
 	const ViString resName = (const ViString)"USB?*INSTR{VI_ATTR_MANF_ID==0x0699}";
 	ViChar desc[VI_FIND_BUFLEN+1];
-	status = viOpenDefaultRM(&_resMN);
+	status = viOpenDefaultRM(&resMN_);
 	if (status != VI_SUCCESS)	{
 //		pushAction(genActions::init,status);
 		return false;
 	}
-	status = viFindRsrc(_resMN, resName , &_mainFList, &numInit, desc);
+	status = viFindRsrc(resMN_, resName , &mainFList_, &numInit, desc);
 //	std::cout << "viFindRsrc errCode = " << status << std::endl;
 	if (status != VI_SUCCESS)	{
 //		pushAction(genActions::init,status);
 		return false;
 	}
-	status = viOpen(_resMN, desc, VI_NULL, VI_NULL, &_session);
+	status = viOpen(resMN_, desc, VI_NULL, VI_NULL, &session_);
 //	std::cout << "viOpen errCode = " << status << std::endl;
 	if (status != VI_SUCCESS)	{
 //		pushAction(genActions::init,status);
@@ -60,26 +60,26 @@ bool genModule::openSession()	{
 	return true;
 }
 
-bool genModule::closeSession()	{
+bool GenModule::closeSession()	{
 	ViStatus status;
-	status = viClose(_session);
+	status = viClose(session_);
 //	pushAction(genActions::close,status);
 	if (status != VI_SUCCESS)
 		return false;
-	status = viClose(_resMN);
+	status = viClose(resMN_);
 	if (status != VI_SUCCESS)
 		return false;
 	active = false;
 	return true;
 }
 
-genModule::string genModule::whoYou()	{
+GenModule::string GenModule::whoAreYou()	{
 	ViStatus status;
 	ViUInt32 retCount = 0;
 	ViChar buffer[256];
-	status = viWrite(_session, (unsigned char*)"*IDN?", 5, &retCount);
+	status = viWrite(session_, (unsigned char*)"*IDN?", 5, &retCount);
 	if(status == VI_SUCCESS)	{
-		status = viRead(_session, (unsigned char*)buffer, 255, &retCount);
+		status = viRead(session_, (unsigned char*)buffer, 255, &retCount);
 		if(status == VI_SUCCESS)		{
 			buffer[retCount] = '\0';
 			return string(buffer);
@@ -89,19 +89,19 @@ genModule::string genModule::whoYou()	{
 		return string();
 }
 
-ViSession	genModule::resMN() const	{
-	return _resMN;
+ViSession	GenModule::resMN() const	{
+	return resMN_;
 }
 
-ViSession	genModule::session() const	{
-	return _session;
+ViSession	GenModule::session() const	{
+	return session_;
 }
 
-const genSettings_t &genModule::getSettgins() const	{
-	return settings[_channel];
+const GenSettings_t &GenModule::getSettgins() const	{
+	return settings[channel_];
 }
 
-bool genModule::setDefaultSettings(int ch)	{
+bool GenModule::setDefaultSettings(int ch)	{
 	if(!active) return false;
 	ViStatus status;
 	stringstream data;
@@ -132,119 +132,119 @@ bool genModule::setDefaultSettings(int ch)	{
 	return true;
 }
 
-bool genModule::setPing(int ping)	{
+bool GenModule::setPing(int ping)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":BURS:TDEL " << ping << "ms";
+	data << "SOUR" << channel_ << ":BURS:TDEL " << ping << "ms";
 	auto status = write(data.str());
 //	pushAction(genActions::setPing , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].ping = ping;
+		settings[channel_].ping = ping;
 		return true;
 	}
 	else
 		return false;
 }
 
-bool genModule::setLeftFront(int leftFront)	{
+bool GenModule::setLeftFront(int leftFront)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":PULS:TRAN:LEAD " << leftFront << "ns";
+	data << "SOUR" << channel_ << ":PULS:TRAN:LEAD " << leftFront << "ns";
 	auto status = write(data.str());
 //	pushAction(genActions::setLeftFront , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].leftFront = leftFront;
+		settings[channel_].leftFront = leftFront;
 		return true;
 	}
 	else
 		return false;
 }
 
-bool genModule::setRightFront(int rightFront)	{
+bool GenModule::setRightFront(int rightFront)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":PULS:TRAN:TRA " << rightFront << "ns";
+	data << "SOUR" << channel_ << ":PULS:TRAN:TRA " << rightFront << "ns";
 	auto status = write(data.str());
 //	pushAction(genActions::setRightFront , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].rightFront = rightFront;
+		settings[channel_].rightFront = rightFront;
 		return true;
 	}
 	else
 		return false;
 }
 
-bool genModule::setCountSignals(int countSignals)	{
+bool GenModule::setCountSignals(int countSignals)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":BURS:NCYC " << countSignals;
+	data << "SOUR" << channel_ << ":BURS:NCYC " << countSignals;
 	auto status = write(data.str());
 //	pushAction(genActions::setCountSignals , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].countSignals = countSignals;
+		settings[channel_].countSignals = countSignals;
 		return true;
 	}
 	else
 		return false;
 }
 
-bool genModule::setFrequency(int frequency)	{
+bool GenModule::setFrequency(int frequency)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":FREQ " << frequency << "kHZ";
+	data << "SOUR" << channel_ << ":FREQ " << frequency << "kHZ";
 	auto status = write(data.str());
 //	pushAction(genActions::setFrequency , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].frequency = frequency;
+		settings[channel_].frequency = frequency;
 		return true;
 	}
 	else
 		return false;
 }
 
-bool genModule::setHighLevel(int val)	{
+bool GenModule::setHighLevel(int val)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":VOLT:HIGH " << val << "mV";
+	data << "SOUR" << channel_ << ":VOLT:HIGH " << val << "mV";
 	auto status = write(data.str());
 //	pushAction(genActions::setAmplitudeHigh , status);
 	if(status == VI_SUCCESS)	{
-		settings[_channel].highLevel = val;
+		settings[channel_].highLevel = val;
 		return true;
 	} else
 		return false;
 }
 
-bool genModule::setLowLevel(int val)	{
+bool GenModule::setLowLevel(int val)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":VOLT:LOW " << val << "mV";
+	data << "SOUR" << channel_ << ":VOLT:LOW " << val << "mV";
 	auto status = write(data.str());
 //	pushAction(genActions::setAmplitudeLow , status);
 	if(status == VI_SUCCESS)	{
-		settings[_channel].lowLevel = val;
+		settings[channel_].lowLevel = val;
 		return true;
 	} else
 		return false;
 }
 
-bool genModule::setInterval(int interval)	{
+bool GenModule::setInterval(int interval)	{
 	if(!active) return false;
 	stringstream data;
 	data << "TRIG:SEQ:TIM " << interval << "ms";
 	auto status = write(data.str());
 //	pushAction(genActions::setInterval , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].interval = interval;
+		settings[channel_].interval = interval;
 		return true;
 	} else
 		return false;
 }
 
-bool genModule::activateChannel(bool statusChannel)	{
+bool GenModule::activateChannel(bool statusChannel)	{
 	if(!active) return false;
 	stringstream data;
-	data << "OUTP" << _channel << ":STAT ";
+	data << "OUTP" << channel_ << ":STAT ";
 	if (statusChannel == true)
 		data << "ON";
 	if (statusChannel == false)
@@ -252,34 +252,34 @@ bool genModule::activateChannel(bool statusChannel)	{
 	auto status = write(data.str());
 //	pushAction(genActions::activateChannel , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].activeChannel = statusChannel;
+		settings[channel_].activeChannel = statusChannel;
 		return true;
 	} else
 		return false;
 }
 
-bool genModule::setWidth(int width)	{
+bool GenModule::setWidth(int width)	{
 	if(!active) return false;
 	stringstream data;
-	data << "SOUR" << _channel << ":PULS:WIDT " << width << "ns";
+	data << "SOUR" << channel_ << ":PULS:WIDT " << width << "ns";
 	auto status = write(data.str());
 //	pushAction(genActions::setWidth , status);
 	if (status == VI_SUCCESS)	{
-		settings[_channel].width = width;
+		settings[channel_].width = width;
 		return true;
 	} else
 		return false;
 }
 
-bool genModule::getWidth(int width)	{
+bool GenModule::getWidth(int width)	{
 	if(!active) return false;
 	stringstream data;
 	string widthStr;
-	data << "SOUR" << _channel << ":PULS:WIDT?";
+	data << "SOUR" << channel_ << ":PULS:WIDT?";
 	auto status = read(data.str(),widthStr);
 	if(status == VI_SUCCESS)	{
 		width = stoi(widthStr);
-		settings[_channel].width = width;
+		settings[channel_].width = width;
 		return true;
 	} else	{
 //		pushAction(genActions::getWidth,status);
@@ -287,15 +287,15 @@ bool genModule::getWidth(int width)	{
 	}
 }
 
-bool genModule::getHighLevel(int val)	{
+bool GenModule::getHighLevel(int val)	{
 	if(!active) return false;
 	stringstream data;
 	string ampStr;
-	data << "SOUR" << _channel << ":VOLT:HIGH?";
+	data << "SOUR" << channel_ << ":VOLT:HIGH?";
 	auto status = read(data.str(),ampStr);
 	if(status == VI_SUCCESS)	{
 		val = stoi(ampStr);
-		settings[_channel].highLevel = val;
+		settings[channel_].highLevel = val;
 		return true;
 	} else	{
 //		pushAction(genActions::getAmplitudeHigh,status);
@@ -303,15 +303,15 @@ bool genModule::getHighLevel(int val)	{
 	}
 }
 
-bool genModule::getLowLevel(int val)	{
+bool GenModule::getLowLevel(int val)	{
 	if(!active) return false;
 	stringstream data;
 	string ampStr;
-	data << "SOUR" << _channel << ":VOLT:LOW?";
+	data << "SOUR" << channel_ << ":VOLT:LOW?";
 	auto status = read(data.str(),ampStr);
 	if(status == VI_SUCCESS)	{
 		val = stoi(ampStr);
-		settings[_channel].lowLevel = val;
+		settings[channel_].lowLevel = val;
 		return true;
 	} else	{
 //		pushAction(genActions::getAmplitudeHigh,status);
@@ -319,15 +319,15 @@ bool genModule::getLowLevel(int val)	{
 	}
 }
 
-bool genModule::getLeftFront(int leftFront)	{
+bool GenModule::getLeftFront(int leftFront)	{
 	if(!active) return false;
 	stringstream data;
 	string lFrontStr;
-	data << "SOUR" << _channel << ":PULS:TRAN:LEAD?";
+	data << "SOUR" << channel_ << ":PULS:TRAN:LEAD?";
 	auto status = read(data.str(),lFrontStr);
 	if(status == VI_SUCCESS)	{
 		leftFront = stoi(lFrontStr);
-		settings[_channel].leftFront = leftFront;
+		settings[channel_].leftFront = leftFront;
 		return leftFront;
 	} else	{
 //		pushAction(genActions::getLeftFront,status);
@@ -335,15 +335,15 @@ bool genModule::getLeftFront(int leftFront)	{
 	}
 }
 
-bool genModule::getRightFront(int rightFront)	{
+bool GenModule::getRightFront(int rightFront)	{
 	if(!active) return false;
 	stringstream data;
 	string rFrontStr;
-	data << "SOUR" << _channel << ":PULS:TRAN:TRA?";
+	data << "SOUR" << channel_ << ":PULS:TRAN:TRA?";
 	auto status = read(data.str(),rFrontStr);
 	if(status == VI_SUCCESS)	{
 		rightFront = stoi(rFrontStr);
-		settings[_channel].rightFront = rightFront;
+		settings[channel_].rightFront = rightFront;
 		return rightFront;
 	} else	{
 //		pushAction(genActions::getRightFront,status);
@@ -351,7 +351,7 @@ bool genModule::getRightFront(int rightFront)	{
 	}
 }
 
-bool genModule::getInterval(int interval)	{
+bool GenModule::getInterval(int interval)	{
 	if(!active) return false;
 	stringstream data;
 	string intervalStr;
@@ -359,7 +359,7 @@ bool genModule::getInterval(int interval)	{
 	auto status = read(data.str(),intervalStr);
 	if(status == VI_SUCCESS)	{
 		interval = stoi(intervalStr);
-		settings[_channel].rightFront = interval;
+		settings[channel_].rightFront = interval;
 		return interval;
 	} else	{
 //		pushAction(genActions::getInterval,status);
@@ -367,21 +367,21 @@ bool genModule::getInterval(int interval)	{
 	}
 }
 
-ViStatus genModule::write(const string &text) const	{
+ViStatus GenModule::write(const string &text) const	{
 	ViUInt32 retCount = 0;
-	auto status = viWrite(_session, (ViBuf)text.c_str(),text.size(),&retCount);
+	auto status = viWrite(session_, (ViBuf)text.c_str(),text.size(),&retCount);
 	if(retCount != text.size())
 		return VI_ERROR_BERR;
 	return status;
 }
 
-ViStatus genModule::read(const string &request,string &answer)	{
+ViStatus GenModule::read(const string &request,string &answer)	{
 	if(!active) return VI_ERROR_BERR;
 	auto status = write(request);
 	if(status == VI_SUCCESS)	{
 		ViUInt32 retCount = 0;
 		ViChar buff[256];
-		status = viRead(_session, (ViPBuf)buff, 256, &retCount);
+		status = viRead(session_, (ViPBuf)buff, 256, &retCount);
 		if(status == VI_SUCCESS)	{
 //			cout << "readOperation: " << buff << endl;
 			buff[retCount - 4] = '\0';
@@ -392,36 +392,36 @@ ViStatus genModule::read(const string &request,string &answer)	{
 		return status;
 }
 
-std::string genModule::decodeAction(genActions op) const	{
-	if(op == genActions::init)
+std::string GenModule::decodeAction(GenActions op) const	{
+	if(op == GenActions::init)
 		return std::string("Init");
-	if(op == genActions::activateChannel)
+	if(op == GenActions::activateChannel)
 		return std::string("Activate Channel");
-	if(op == genActions::setAmplitudeHigh)
+	if(op == GenActions::setAmplitudeHigh)
 		return std::string("Set Amplitude[High]");
-	if(op == genActions::setAmplitudeLow)
+	if(op == GenActions::setAmplitudeLow)
 		return std::string("Set Amplitude[Low]");
-	if(op == genActions::setChannel)
+	if(op == GenActions::setChannel)
 		return std::string("Set Channel");
-	if(op == genActions::setCountSignals)
+	if(op == GenActions::setCountSignals)
 		return std::string("Set Count Signals");
-	if(op == genActions::setDefaultSettings)
+	if(op == GenActions::setDefaultSettings)
 		return std::string("Set Default Settings");
-	if(op == genActions::setFrequency)
+	if(op == GenActions::setFrequency)
 		return std::string("Set Frequency");
-	if(op == genActions::setInterval)
+	if(op == GenActions::setInterval)
 		return std::string("Set Interval");
-	if(op == genActions::setLeftFront)
+	if(op == GenActions::setLeftFront)
 		return std::string("Set Left Front");
-	if(op == genActions::setPing)
+	if(op == GenActions::setPing)
 		return std::string("Set Ping");
-	if(op == genActions::setRightFront)
+	if(op == GenActions::setRightFront)
 		return std::string("Set Right Front");
-	if(op == genActions::setWidth)
+	if(op == GenActions::setWidth)
 		return std::string("Set Width");
 	return std::string("");
 }
 
-int genModule::getChannelActive()	const	{
-	return _channel;
+int GenModule::getChannelActive()	const	{
+	return channel_;
 }

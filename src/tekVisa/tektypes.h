@@ -7,9 +7,9 @@
 
 #include "include/visa/visatype.h"
 
-class genModule;
+class GenModule;
 
-struct genSettings_t	{
+struct GenSettings_t	{
 	int leftFront;
 	int rightFront;
 	int interval;
@@ -22,13 +22,13 @@ struct genSettings_t	{
 	int frequency;
 };
 
-struct calibrSettings_t	{
+struct CalibrSettings_t	{
 	int ampStart;
 	int ampEnd;
 	int ampStep;
 };
 
-enum class genActions	{
+enum class GenActions	{
 	init,
 	close,
 	setWidth,
@@ -51,15 +51,15 @@ enum class genActions	{
 	getInterval
 };
 
-struct actionInfo_s	{
-	actionInfo_s(){}
-	actionInfo_s(genActions act,ViStatus err)
+struct ActionInfo_s	{
+	ActionInfo_s(){}
+	ActionInfo_s(GenActions act,ViStatus err)
 		: actCode(act),errCode(err){}
-	genActions	actCode;
+	GenActions	actCode;
 	ViStatus	errCode;
 };
 
-struct dataChip	{
+struct DataChip	{
 	using	array4	=	std::array<double, 4>;
 	using	array2	=	std::array<double, 2>;
 

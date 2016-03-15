@@ -49,35 +49,35 @@ protected:
 	void	writeToHomingTable();
 
 private:
-	QWidget		*centralWidget;
-	QPushButton *startButton;
-	QPushButton *goButton;
-	QPushButton	*stopButton;
-	QPushButton	*exitButton;
-	QPushButton *endButton;
-	QPushButton	*showSettings;
-	QPushButton	*showTables;
-	QLineEdit	*pathToSaveL;
-	QLineEdit	*numberChipL;
-	QCheckBox	*isCountChCheck;
-	QHBoxLayout *mainHLayout, *controlHLayout, *settingsHLayout;
-	QVBoxLayout *rightVLayout, *goApplyVLayout, *addPlotsVLayout;
-	QFormLayout	*saveVLayout;
+	QWidget		*centralWidget_;
+	QPushButton *startButton_;
+	QPushButton *goButton_;
+	QPushButton	*stopButton_;
+	QPushButton	*exitButton_;
+	QPushButton *endButton_;
+	QPushButton	*showSettings_;
+	QPushButton	*showTables_;
+	QLineEdit	*pathToSaveL_;
+	QLineEdit	*numberChipL_;
+	QCheckBox	*isCountChCheck_;
+	QHBoxLayout *mainHLayout_, *controlHLayout_, *settingsHLayout_;
+	QVBoxLayout *rightVLayout_, *goApplyVLayout_, *addPlotsVLayout_;
+	QFormLayout	*saveVLayout_;
 
-	QWidget		*tablesWidget;
-	QTableWidget*dataTable;
-	QTableWidget*homingTable;
-	QHBoxLayout	*tableHLayout;
-	itemsArray	homingItems;
-	itemsArray	dataItems;
+	QWidget		*tablesWidget_;
+	QTableWidget*dataTable_;
+	QTableWidget*homingTable_;
+	QHBoxLayout	*tableHLayout_;
+	itemsArray	homingItems_;
+	itemsArray	dataItems_;
 
-	tekModule	*module;
-	tekOutput	*output;
-	tekSettings *settings;
-	chipModule	*chip;
-	plotsOutput	*plots;
-	processing	*calculation;
-	QTimer*		_timerUpdate;
+	tekModule	*module_;
+	TekOutput	*output_;
+	TekSettings *settings_;
+	ChipModule	*chip_;
+	Plots	*plots_;
+	Processing	*calculation_;
+	QTimer*		timerUpdate_;
 };
 
 #endif // MAINWINDOW_H

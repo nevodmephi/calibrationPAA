@@ -1,6 +1,6 @@
 #include "chipmodule.h"
 
-chipModule::chipModule(genModule *tekMod, processing *calculation)	{
+ChipModule::ChipModule(GenModule *tekMod, Processing *calculation)	{
 	_module = tekMod;
 	_calculation = calculation;
 	_howChipChannel.first = 0;
@@ -9,7 +9,7 @@ chipModule::chipModule(genModule *tekMod, processing *calculation)	{
 	_groupChannel	= 0;
 }
 
-bool chipModule::openSession()	{
+bool ChipModule::openSession()	{
 	Create_Dir_Files();
 	ReadStopTime();
 	ReadConfigFile(Thresh, HV);
@@ -21,31 +21,31 @@ bool chipModule::openSession()	{
 	return status;
 }
 
-void chipModule::closeSession()	{
+void ChipModule::closeSession()	{
 	endMainBlock();
 	UnConnect();
 }
 
-void chipModule::tekModuleActivateChannel(int channel, bool status)	{
+void ChipModule::tekModuleActivateChannel(int channel, bool status)	{
 	_module->setChannel(channel + 1);
 	_module->activateChannel(status);
 }
 
-void chipModule::tekModuleSetHighLevel(int channel, int level)	{
+void ChipModule::tekModuleSetHighLevel(int channel, int level)	{
 	_module->setChannel(channel + 1);
 	_module->setHighLevel(level);
 }
 
-void chipModule::tekModuleSetLowLevel(int channel, int level)	{
+void ChipModule::tekModuleSetLowLevel(int channel, int level)	{
 	_module->setChannel(channel + 1);
 	_module->setLowLevel(level);
 }
 
-void chipModule::setThresh(int numberChipChannel, int codeThresh)	{
+void ChipModule::setThresh(int numberChipChannel, int codeThresh)	{
 	_thresh[numberChipChannel + 12] = codeThresh;
 }
 
-void chipModule::mountThresh()	{
+void ChipModule::mountThresh()	{
 	byte Claster;
 	for (int i = 0; i < NCLAST * NDET; i++)
 		std::cout << _thresh[i] << " ";
@@ -58,7 +58,7 @@ void chipModule::mountThresh()	{
 	printf("\n");
 }
 
-chipModule::int32Vec chipModule::sendOneSignal(int channel, int amp)	{
+ChipModule::int32Vec ChipModule::sendOneSignal(int channel, int amp)	{
 	std::vector<int> max;
 	std::cout << std::endl;
 //	setThresh(0, 3);
@@ -94,7 +94,7 @@ chipModule::int32Vec chipModule::sendOneSignal(int channel, int amp)	{
 	return max;
 }
 
-int chipModule::searchAndSetChipChannel()	{
+int ChipModule::searchAndSetChipChannel()	{
 	std::vector<int>	response = sendOneSignal(0, 1500);
 	if (response[0] < -50 || response[1] < -50)
 	{
@@ -115,7 +115,7 @@ int chipModule::searchAndSetChipChannel()	{
 	return -1;
 }
 
-void chipModule::saveToFileAmp(const string& pathToFile, int chipChannel)	{
+void ChipModule::saveToFileAmp(const string& pathToFile, int chipChannel)	{
 	std::fstream saveFile;
 	std::vector<std::pair<int, std::array<int, 2>>>	saveVec;
 	for (auto item : _calibr)
@@ -153,16 +153,16 @@ void chipModule::saveToFileAmp(const string& pathToFile, int chipChannel)	{
 	}
 }
 
-void chipModule::setSettings(int channel, int ampStart, int ampEnd, int ampStep)	{
+void ChipModule::setSettings(int channel, int ampStart, int ampEnd, int ampStep)	{
 	_settings[channel].ampStart	= ampStart;
 	_settings[channel].ampEnd	= ampEnd;
 	_settings[channel].ampStep	= ampStep;
 }
 
-void chipModule::ampCalibration(int ampStep, int threshStep)	{
+void ChipModule::ampCalibration(int ampStep, int threshStep)	{
 	std::mutex	block;
 	_stopFlag = false;
-	_activeMode = chipModule::mode::amp;
+	_activeMode = ChipModule::mode::amp;
 	int	ampStart = 125;
 	int	ampEnd = 10000;
 //	setThresh(0, 3);
@@ -226,11 +226,11 @@ void chipModule::ampCalibration(int ampStep, int threshStep)	{
 	_dataUpdate = false;
 	_calculation->computeForOneRecordAmp();
 
-	std::thread calibrThresh(&chipModule::threshCalibration, this, threshStep);
+	std::thread calibrThresh(&ChipModule::threshCalibration, this, threshStep);
 	calibrThresh.detach();
 }
 
-int chipModule::searchThresh()	{
+int ChipModule::searchThresh()	{
 //	_calibr.clear();
 	tekModuleActivateChannel(0, true);
 	tekModuleSetLowLevel(0, -50);
@@ -267,11 +267,11 @@ int chipModule::searchThresh()	{
 	return -1;
 }
 
-void chipModule::threshCalibration(int step)	{
+void ChipModule::threshCalibration(int step)	{
 	_stopFlag = false;
 	_dataUpdate	= false;
 	_threshList.clear();
-	_activeMode = chipModule::mode::form;
+	_activeMode = ChipModule::mode::form;
 	for (int threshGo = 25; threshGo <= 225; threshGo += step)	{
 		if (_stopFlag == true)
 			break;
@@ -289,7 +289,7 @@ void chipModule::threshCalibration(int step)	{
 	_calculation->computeForOneRecordForm();
 }
 
-void chipModule::saveToFileThresh(const string& pathToFile, int chipChannel)	{
+void ChipModule::saveToFileThresh(const string& pathToFile, int chipChannel)	{
 	std::fstream saveFile;
 	std::vector<std::pair<int, int>>	saveVec;
 	for (auto item : _threshList)
@@ -324,34 +324,34 @@ void chipModule::saveToFileThresh(const string& pathToFile, int chipChannel)	{
 	saveFile.close();
 }
 
-chipModule::mode chipModule::returnMode()	const	{
+ChipModule::mode ChipModule::returnMode()	const	{
 	return _activeMode;
 }
 
-std::pair<int, std::array<int, 2>> chipModule::returnLastAmp()	const	{
+std::pair<int, std::array<int, 2>> ChipModule::returnLastAmp()	const	{
 	return std::pair<int, std::array<int, 2>>(_calibr.cbegin()->first, _calibr.cbegin()->second);
 }
 
-chipModule::int32Pair	chipModule::returnLastThresh()	const	{
+ChipModule::int32Pair	ChipModule::returnLastThresh()	const	{
 	if (_threshList.size() == 0)
 		return std::pair<int, int>(-100, -100);
 	else
 		return _threshList.back();
 }
 
-void chipModule::stopCalibration()	{
+void ChipModule::stopCalibration()	{
 	_stopFlag = true;
 }
 
-void chipModule::calibration(int stepAmp, int stepThresh)	{
-	std::thread calibrAmp(&chipModule::ampCalibration, this, stepAmp, stepThresh);
+void ChipModule::calibration(int stepAmp, int stepThresh)	{
+	std::thread calibrAmp(&ChipModule::ampCalibration, this, stepAmp, stepThresh);
 	calibrAmp.detach();
 }
 
-chipModule::vecint32Pair chipModule::searchAiming(int chipChannel, int amp)	{
+ChipModule::vecint32Pair ChipModule::searchAiming(int chipChannel, int amp)	{
 	_calibr.clear();
 	int chipV4channel;
-	chipModule::vecint32Pair	deviation;
+	ChipModule::vecint32Pair	deviation;
 	if (chipChannel == 0)
 		chipV4channel = 0;
 	if (chipChannel == 1)
@@ -386,22 +386,22 @@ chipModule::vecint32Pair chipModule::searchAiming(int chipChannel, int amp)	{
 	return deviation;
 }
 
-void	chipModule::setDataUpdateFalse()	{
+void	ChipModule::setDataUpdateFalse()	{
 	_dataUpdate	= false;
 }
 
-void	chipModule::setGroupChannel(int	channel)	{
+void	ChipModule::setGroupChannel(int	channel)	{
 	_groupChannel	= channel;
 }
 
-void	chipModule::setPathToSave(const string &pathToSave)	{
+void	ChipModule::setPathToSave(const string &pathToSave)	{
 	_pathToSave	= pathToSave;
 }
 
-bool	chipModule::getDataUpdate()	const	{
+bool	ChipModule::getDataUpdate()	const	{
 	return _dataUpdate;
 }
 
-void	chipModule::setChannels(const int32Pair &channel)	{
+void	ChipModule::setChannels(const int32Pair &channel)	{
 	_howChipChannel	= channel;
 }

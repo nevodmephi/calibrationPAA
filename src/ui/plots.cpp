@@ -1,36 +1,36 @@
 #include "plots.h"
 
-plotsOutput::plotsOutput(chipModule *chip, QWidget *parent)
-	: QWidget(parent), _chip(chip)	{
-	_ampFirst	=	new QCustomPlot(this);
-	_ampSecond	=	new QCustomPlot(this);
-	_form		=	new QCustomPlot(this);
+Plots::Plots(ChipModule *chip, QWidget *parent)
+	: QWidget(parent), chip_(chip)	{
+	ampFirst_	=	new QCustomPlot(this);
+	ampSecond_	=	new QCustomPlot(this);
+	form_		=	new QCustomPlot(this);
 
-	_ampHLayout	=	new QHBoxLayout;
-	_formVLayout	=	new QVBoxLayout;
-	_isRescaleButton	= new QCheckBox("auto Rescale", this);
-	_ampHLayout->	addWidget(_ampFirst);
-	_ampHLayout->	addWidget(_ampSecond);
-	_formVLayout->	addWidget(_isRescaleButton);
-	_formVLayout->	addLayout(_ampHLayout);
-	_formVLayout->	addWidget(_form);
+	ampHLayout_	=	new QHBoxLayout;
+	formVLayout_	=	new QVBoxLayout;
+	isRescaleButton_	= new QCheckBox("auto Rescale", this);
+	ampHLayout_->	addWidget(ampFirst_);
+	ampHLayout_->	addWidget(ampSecond_);
+	formVLayout_->	addWidget(isRescaleButton_);
+	formVLayout_->	addLayout(ampHLayout_);
+	formVLayout_->	addWidget(form_);
 
-	setLayout(_formVLayout);
+	setLayout(formVLayout_);
 	createFirst();
 	createSecond();
 	createForm();
 }
 
-plotsOutput::~plotsOutput()	{
-	delete _isRescaleButton;
-	delete _ampFirst;
-	delete _ampSecond;
-	delete _form;
-	delete _ampHLayout;
-	delete _formVLayout;
+Plots::~Plots()	{
+	delete isRescaleButton_;
+	delete ampFirst_;
+	delete ampSecond_;
+	delete form_;
+	delete ampHLayout_;
+	delete formVLayout_;
 }
 
-void plotsOutput::update(const Subject *subject)	{
+void Plots::update(const Subject *subject)	{
 //	if (subject == _chip)
 //	{
 //		if (_chip->returnMode() == chipModule::mode::amp)
@@ -51,111 +51,111 @@ void plotsOutput::update(const Subject *subject)	{
 //	}
 }
 
-void plotsOutput::dataUpdate()	{
+void Plots::dataUpdate()	{
 	std::mutex	block;
 	block.lock();
-	if (_chip->getDataUpdate() == true)
+	if (chip_->getDataUpdate() == true)
 	{
-		if (_chip->returnMode() == chipModule::mode::amp)
+		if (chip_->returnMode() == ChipModule::mode::amp)
 		{
-			_ampFirstData.first.push_back(-_chip->returnLastAmp().first);
-			_ampFirstData.second.push_back(-_chip->returnLastAmp().second[0]);
-			_ampSecondData.first.push_back(-_chip->returnLastAmp().first);
-			_ampSecondData.second.push_back(-_chip->returnLastAmp().second[1]);
+			ampFirstData_.first.push_back(-chip_->returnLastAmp().first);
+			ampFirstData_.second.push_back(-chip_->returnLastAmp().second[0]);
+			ampSecondData_.first.push_back(-chip_->returnLastAmp().first);
+			ampSecondData_.second.push_back(-chip_->returnLastAmp().second[1]);
 			renderFirst();
 			renderSecond();
 		}
 
-		if (_chip->returnMode() == chipModule::mode::form)
+		if (chip_->returnMode() == ChipModule::mode::form)
 		{
-			auto thresh = _chip->returnLastThresh();
+			auto thresh = chip_->returnLastThresh();
 			if (thresh.first != -100 && thresh.second != -100)
 			{
-				_formData.first.push_back(_chip->returnLastThresh().first);
-				_formData.second.push_back(-_chip->returnLastThresh().second);
+				formData_.first.push_back(chip_->returnLastThresh().first);
+				formData_.second.push_back(-chip_->returnLastThresh().second);
 				renderForm();
 			}
 		}
-		_chip->setDataUpdateFalse();
+		chip_->setDataUpdateFalse();
 	}
 	block.unlock();
 }
 
-void plotsOutput::allClear()	{
-	_ampFirstData.first.clear();
-	_ampFirstData.second.clear();
-	_ampSecondData.first.clear();
-	_ampSecondData.second.clear();
-	_formData.first.clear();
-	_formData.second.clear();
-	_ampFirst->replot();
-	_ampSecond->replot();
-	_form->replot();
+void Plots::allClear()	{
+	ampFirstData_.first.clear();
+	ampFirstData_.second.clear();
+	ampSecondData_.first.clear();
+	ampSecondData_.second.clear();
+	formData_.first.clear();
+	formData_.second.clear();
+	ampFirst_->replot();
+	ampSecond_->replot();
+	form_->replot();
 }
 
-void plotsOutput::createFirst()	{
-	_ampFirst->addGraph();
+void Plots::createFirst()	{
+	ampFirst_->addGraph();
 //	ampFirst->graph(0)->setPen(QPen(QColor(0, 0, 255, 20)));
-	_ampFirst->graph(0)->setLineStyle(QCPGraph::lsLine);
-	_ampFirst->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-	_ampFirst->graph(0)->setName(QString("First Channel"));
+	ampFirst_->graph(0)->setLineStyle(QCPGraph::lsLine);
+	ampFirst_->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+	ampFirst_->graph(0)->setName(QString("First Channel"));
 //	ampFirst->addGraph();
 //	ampFirst->graph(1)->setPen(QPen(QColor(0, 255, 0, 20)));
 //	ampFirst->graph(1)->setLineStyle(QCPGraph::lsNone);
 //	ampFirst->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
 //	ampFirst->graph(1)->setName(QString("Second channel"));
-	_ampFirst->xAxis->setLabel(QString("Amplitude, mV"));
-	_ampFirst->yAxis->setLabel(QString("Code PAA"));
+	ampFirst_->xAxis->setLabel(QString("Amplitude, mV"));
+	ampFirst_->yAxis->setLabel(QString("Code PAA"));
 
-	_ampFirst->rescaleAxes();
+	ampFirst_->rescaleAxes();
 
-	_ampFirst->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+	ampFirst_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
-void plotsOutput::createSecond()	{
-	_ampSecond->addGraph();
-	_ampSecond->graph(0)->setLineStyle(QCPGraph::lsLine);
-	_ampSecond->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-	_ampSecond->graph(0)->setName(QString("Second Channel"));
-	_ampSecond->xAxis->setLabel(QString("Amplitude, mV"));
-	_ampSecond->yAxis->setLabel(QString("Code PAA"));
+void Plots::createSecond()	{
+	ampSecond_->addGraph();
+	ampSecond_->graph(0)->setLineStyle(QCPGraph::lsLine);
+	ampSecond_->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+	ampSecond_->graph(0)->setName(QString("Second Channel"));
+	ampSecond_->xAxis->setLabel(QString("Amplitude, mV"));
+	ampSecond_->yAxis->setLabel(QString("Code PAA"));
 //	ampSecond->graph(0)->setName(QString("Second Channel"));
 
-	_ampSecond->rescaleAxes();
+	ampSecond_->rescaleAxes();
 
-	_ampSecond->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+	ampSecond_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
-void plotsOutput::createForm()	{
-	_form->addGraph();
-	_form->graph(0)->setLineStyle(QCPGraph::lsNone);
-	_form->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-	_form->xAxis->setLabel(QString("Threshold"));
-	_form->yAxis->setLabel(QString("Amplitude, mV"));
-	_form->graph(0)->setName(QString("Form"));
+void Plots::createForm()	{
+	form_->addGraph();
+	form_->graph(0)->setLineStyle(QCPGraph::lsNone);
+	form_->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+	form_->xAxis->setLabel(QString("Threshold"));
+	form_->yAxis->setLabel(QString("Amplitude, mV"));
+	form_->graph(0)->setName(QString("Form"));
 
-	_form->rescaleAxes();
+	form_->rescaleAxes();
 
-	_form->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+	form_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
-void plotsOutput::renderFirst()	{
-	_ampFirst->graph(0)->setData(_ampFirstData.first, _ampFirstData.second);
-	_ampFirst->replot();
-	if (_isRescaleButton->isChecked() == true)
-		_ampFirst->rescaleAxes();
+void Plots::renderFirst()	{
+	ampFirst_->graph(0)->setData(ampFirstData_.first, ampFirstData_.second);
+	ampFirst_->replot();
+	if (isRescaleButton_->isChecked() == true)
+		ampFirst_->rescaleAxes();
 }
 
-void plotsOutput::renderSecond()	{
-	_ampSecond->graph(0)->setData(_ampSecondData.first, _ampSecondData.second);
-	_ampSecond->replot();
-	if (_isRescaleButton->isChecked() == true)
-		_ampSecond->rescaleAxes();
+void Plots::renderSecond()	{
+	ampSecond_->graph(0)->setData(ampSecondData_.first, ampSecondData_.second);
+	ampSecond_->replot();
+	if (isRescaleButton_->isChecked() == true)
+		ampSecond_->rescaleAxes();
 }
 
-void plotsOutput::renderForm()	{
-	_form->graph(0)->setData(_formData.first, _formData.second);
-	_form->replot();
-	if (_isRescaleButton->isChecked() == true)
-		_form->rescaleAxes();
+void Plots::renderForm()	{
+	form_->graph(0)->setData(formData_.first, formData_.second);
+	form_->replot();
+	if (isRescaleButton_->isChecked() == true)
+		form_->rescaleAxes();
 }

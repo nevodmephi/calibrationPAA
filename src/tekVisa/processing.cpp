@@ -2,34 +2,34 @@
 
 using namespace std;
 
-processing::processing()	{
+Processing::Processing()	{
 	for (int i = 0; i < 4; i++)
 		for (int j = 0; j < 4; j++)
-			homing[i][j] = 0;
+			homing_[i][j] = 0;
 
 	for (int i = 0; i < 4; i++)	{
-		data.transformationADC[i] = 0;
-		data.errorADC[i] = 0;
-		data.constADC[i] = 0;
-		data.errorConstADC[i] = 0;
+		data_.transformationADC[i] = 0;
+		data_.errorADC[i] = 0;
+		data_.constADC[i] = 0;
+		data_.errorConstADC[i] = 0;
 	}
 	for (int i = 0; i < 2; i++)	{
-		data.transformationForm[i]	= 0;
-		data.errorForm[i]	= 0;
-		data.errorConstForm[i]	= 0;
-		data.constForm[i]	= 0;
+		data_.transformationForm[i]	= 0;
+		data_.errorForm[i]	= 0;
+		data_.errorConstForm[i]	= 0;
+		data_.constForm[i]	= 0;
 	}
 }
 
-processing::~processing()	{
+Processing::~Processing()	{
 
 }
 
-void processing::setChipChannel(int chipGroupChannel)	{
-	howChipChannel = chipGroupChannel;
+void Processing::setChipChannel(int chipGroupChannel)	{
+	howChipChannel_ = chipGroupChannel;
 }
 
-processing::factorTransformation	processing::getFactorTransformation(const int32Vec& ampX, const int32Vec& codeY)	{
+Processing::factorTransformation	Processing::getFactorTransformation(const int32Vec& ampX, const int32Vec& codeY)	{
 	if (ampX.size() != codeY.size())
 		return factorTransformation({-1, -1, -1});
 
@@ -69,78 +69,78 @@ processing::factorTransformation	processing::getFactorTransformation(const int32
 //	return pair<double, double>(factor, free);
 }
 
-double	processing::getFactorIntegral(double maxDeviation)	{
+double	Processing::getFactorIntegral(double maxDeviation)	{
 	const double ampMax = 255.0;
 	return maxDeviation / ampMax * 100.0;
 }
 
-void processing::setPathToFile(const string& pathToSaveInput)	{
-	pathToSave = pathToSaveInput;
+void Processing::setPathToFile(const string& pathToSaveInput)	{
+	pathToSave_ = pathToSaveInput;
 
 //	data = {};
 //	homing = {};
 }
 
-void processing::writeDataADCToFiles()	{
-	ofstream mainFile(pathToSave + string("dataADC"));
+void Processing::writeDataADCToFiles()	{
+	ofstream mainFile(pathToSave_ + string("dataADC"));
 	for (int i = 0; i < 4; i++)
-		mainFile << data.transformationADC[i] << "\t";
+		mainFile << data_.transformationADC[i] << "\t";
 	mainFile << endl;
 	for (int i = 0; i < 4; i++)
-		mainFile << data.errorADC[i] << "\t";
+		mainFile << data_.errorADC[i] << "\t";
 	mainFile << endl;
 	for (int i = 0; i < 4; i++)
-		mainFile << data.constADC[i] << "\t";
+		mainFile << data_.constADC[i] << "\t";
 	mainFile << endl;
 	for (int i = 0; i < 4; i++)
-		mainFile << data.errorConstADC[i] << "\t";
+		mainFile << data_.errorConstADC[i] << "\t";
 	mainFile << endl;
 	mainFile.close();
 }
 
-void processing::writeDataFormToFiles()	{
-	ofstream mainFile(pathToSave + string("dataForm"));
+void Processing::writeDataFormToFiles()	{
+	ofstream mainFile(pathToSave_ + string("dataForm"));
 	for (int i = 0; i < 2; i++)
-		mainFile << data.transformationForm[i] << "\t";
+		mainFile << data_.transformationForm[i] << "\t";
 	mainFile << endl;
 	for (int i = 0; i < 2; i++)
-		mainFile << data.errorForm[i] << "\t";
+		mainFile << data_.errorForm[i] << "\t";
 	mainFile << endl;
 	for (int i = 0; i < 2; i++)
-		mainFile << data.constForm[i] << "\t";
+		mainFile << data_.constForm[i] << "\t";
 	mainFile << endl;
 	for (int i = 0; i < 2; i++)
-		mainFile << data.errorConstForm[i] << "\t";
+		mainFile << data_.errorConstForm[i] << "\t";
 	mainFile << endl;
 	mainFile.close();
 }
 
-void processing::writeHomingToFiles()	{
-	ofstream mainFile(string(pathToSave) += "homing");
+void Processing::writeHomingToFiles()	{
+	ofstream mainFile(string(pathToSave_) += "homing");
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
-			mainFile << homing[i][j] << "\t";
+			mainFile << homing_[i][j] << "\t";
 		mainFile << endl;
 	}
 	mainFile.close();
 }
 
-void processing::readHomingFromFiles()	{
-	ifstream mainFile(string(pathToSave) += "homing");
+void Processing::readHomingFromFiles()	{
+	ifstream mainFile(string(pathToSave_) += "homing");
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			mainFile >> homing[i][j];
-			cout << homing[i][j] << "  ";
+			mainFile >> homing_[i][j];
+			cout << homing_[i][j] << "  ";
 		}
 		cout << endl;
 	}
 	mainFile.close();
 }
 
-void processing::computeHomingValues(int chipChannelV4, const int32Vec &minDeviation, const int32Vec &maxDeviation)	{
+void Processing::computeHomingValues(int chipChannelV4, const int32Vec &minDeviation, const int32Vec &maxDeviation)	{
 	readHomingFromFiles();
 	vector<double> influenceChannel(4);
 	for (int i = 0; i < 4; i++)
@@ -148,209 +148,209 @@ void processing::computeHomingValues(int chipChannelV4, const int32Vec &minDevia
 			influenceChannel[i] = 20.0 * log10(maxDeviation[i] / minDeviation[i]);
 	influenceChannel[chipChannelV4] = -1000;
 	for (int i = 0; i < 4; i++)
-			homing[chipChannelV4][i] = influenceChannel[i];
+			homing_[chipChannelV4][i] = influenceChannel[i];
 	writeHomingToFiles();
 }
 
-void processing::readOneRecordAmp(const string &pathToFile)	{
-	vecX.clear();
-	vecFirst.clear();
-	vecSecond.clear();
+void Processing::readOneRecordAmp(const string &pathToFile)	{
+	vecX_.clear();
+	vecFirst_.clear();
+	vecSecond_.clear();
 	ifstream	mainFile(pathToFile);
 	while (!mainFile.eof())
 	{
 		int readX, readFirst, readSecond;
-		if (howChipChannel == 0)
+		if (howChipChannel_ == 0)
 		{
 			mainFile >> readX >> readFirst >> readSecond;
 		}
-		if (howChipChannel == 1)
+		if (howChipChannel_ == 1)
 		{
 			int	readNoOne;
 			int	readNoTwo;
 			mainFile >> readX >> readNoOne >> readNoTwo >> readFirst >> readSecond;
 		}
-		vecX.push_back(readX);
-		vecFirst.push_back(readFirst);
-		vecSecond.push_back(readSecond);
+		vecX_.push_back(readX);
+		vecFirst_.push_back(readFirst);
+		vecSecond_.push_back(readSecond);
 	}
 	mainFile.close();
 }
 
-void processing::readOneRecordForm(const string &pathToFile)	{
-	vecX.clear();
-	vecFirst.clear();
-	vecSecond.clear();
+void Processing::readOneRecordForm(const string &pathToFile)	{
+	vecX_.clear();
+	vecFirst_.clear();
+	vecSecond_.clear();
 	ifstream	mainFile(pathToFile);
 	while (!mainFile.eof())
 	{
 		int readX, readFirst;
-		if (howChipChannel == 0)
+		if (howChipChannel_ == 0)
 			mainFile >> readX >> readFirst;
-		if (howChipChannel == 1)
+		if (howChipChannel_ == 1)
 		{
 			int	readNo;
 			mainFile >> readX >> readNo >> readFirst;
 		}
-		vecX.push_back(readX);
-		vecFirst.push_back(readFirst);
+		vecX_.push_back(readX);
+		vecFirst_.push_back(readFirst);
 	}
 	mainFile.close();
 }
 
-void processing::computeForOneRecordAmp()	{
+void Processing::computeForOneRecordAmp()	{
 	readDataFromFiles();
-	readOneRecordAmp(pathToSave + string("amp"));
+	readOneRecordAmp(pathToSave_ + string("amp"));
 //	for (int i = 0; i < vecFirst.size(); i++)
 //	{
 //		vecFirst[i] = vecFirst[i] * 6;
 //		vecSecond[i]= vecSecond[i] * 6;
 //	}
-	factorTransformation	exchangeFirst = getFactorTransformation(vecFirst, vecX);
-	factorTransformation	exchangeSecond = getFactorTransformation(vecSecond, vecX);
+	factorTransformation	exchangeFirst = getFactorTransformation(vecFirst_, vecX_);
+	factorTransformation	exchangeSecond = getFactorTransformation(vecSecond_, vecX_);
 	cout << exchangeFirst.factor << endl;
-	if (howChipChannel == 0)
+	if (howChipChannel_ == 0)
 	{
-		data.transformationADC[0]	= exchangeFirst.factor;
-		data.errorADC[0]			= exchangeFirst.deltaK;
-		data.constADC[0]			= exchangeFirst.error;
-		data.errorConstADC[0]		= exchangeFirst.deltaB;
+		data_.transformationADC[0]	= exchangeFirst.factor;
+		data_.errorADC[0]			= exchangeFirst.deltaK;
+		data_.constADC[0]			= exchangeFirst.error;
+		data_.errorConstADC[0]		= exchangeFirst.deltaB;
 
-		data.transformationADC[1]	= exchangeSecond.factor;
-		data.errorADC[1]			= exchangeSecond.deltaK;
-		data.constADC[1]			= exchangeSecond.error;
-		data.errorConstADC[1]		= exchangeSecond.deltaB;
+		data_.transformationADC[1]	= exchangeSecond.factor;
+		data_.errorADC[1]			= exchangeSecond.deltaK;
+		data_.constADC[1]			= exchangeSecond.error;
+		data_.errorConstADC[1]		= exchangeSecond.deltaB;
 	}
-	if (howChipChannel == 1)
+	if (howChipChannel_ == 1)
 	{
-		data.transformationADC[2]	= exchangeFirst.factor;
-		data.errorADC[2]			= exchangeFirst.deltaK;
-		data.constADC[2]			= exchangeFirst.error;
-		data.errorConstADC[2]		= exchangeFirst.deltaB;
+		data_.transformationADC[2]	= exchangeFirst.factor;
+		data_.errorADC[2]			= exchangeFirst.deltaK;
+		data_.constADC[2]			= exchangeFirst.error;
+		data_.errorConstADC[2]		= exchangeFirst.deltaB;
 
-		data.transformationADC[3]	= exchangeSecond.factor;
-		data.errorADC[3]			= exchangeSecond.deltaK;
-		data.constADC[3]			= exchangeSecond.error;
-		data.errorConstADC[3]		= exchangeSecond.deltaB;
+		data_.transformationADC[3]	= exchangeSecond.factor;
+		data_.errorADC[3]			= exchangeSecond.deltaK;
+		data_.constADC[3]			= exchangeSecond.error;
+		data_.errorConstADC[3]		= exchangeSecond.deltaB;
 	}
 	writeDataToFiles();
 }
 
-void processing::computeForOneRecordForm()	{
+void Processing::computeForOneRecordForm()	{
 	readDataFromFiles();
-	readOneRecordForm(pathToSave + string("thresh"));
+	readOneRecordForm(pathToSave_ + string("thresh"));
 //	for (int i = 0; i < vecX.size(); i++)
 //		vecX[i] = vecX[i] * 6;
-	factorTransformation	exchange = getFactorTransformation(vecX, vecFirst);
-	if (howChipChannel == 0)
+	factorTransformation	exchange = getFactorTransformation(vecX_, vecFirst_);
+	if (howChipChannel_ == 0)
 	{
-		data.transformationForm[0]	= exchange.factor;
-		data.errorForm[0]			= exchange.deltaK;
-		data.constForm[0]			= exchange.error;
-		data.errorConstForm[0]		= exchange.deltaB;
+		data_.transformationForm[0]	= exchange.factor;
+		data_.errorForm[0]			= exchange.deltaK;
+		data_.constForm[0]			= exchange.error;
+		data_.errorConstForm[0]		= exchange.deltaB;
 	}
-	if (howChipChannel == 1)
+	if (howChipChannel_ == 1)
 	{
-		data.transformationForm[1]	= exchange.factor;
-		data.errorForm[1]			= exchange.deltaK;
-		data.constForm[1]			= exchange.error;
-		data.errorConstForm[1]		= exchange.deltaB;
+		data_.transformationForm[1]	= exchange.factor;
+		data_.errorForm[1]			= exchange.deltaK;
+		data_.constForm[1]			= exchange.error;
+		data_.errorConstForm[1]		= exchange.deltaB;
 	}
 	writeDataToFiles();
 }
 
-const dataChip&	processing::returnData()	const	{
-	return data;
+const DataChip&	Processing::returnData()	const	{
+	return data_;
 }
 
-const processing::homingData&	processing::returnHoming()	const	{
-	return homing;
+const Processing::homingData&	Processing::returnHoming()	const	{
+	return homing_;
 }
 
-void processing::readDataADCFromFiles()	{
+void Processing::readDataADCFromFiles()	{
 	ifstream	mainFile;
-	mainFile.open(pathToSave + string("dataADC"));
+	mainFile.open(pathToSave_ + string("dataADC"));
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.transformationADC[i];
+		mainFile >> data_.transformationADC[i];
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.errorADC[i];
+		mainFile >> data_.errorADC[i];
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.constADC[i];
+		mainFile >> data_.constADC[i];
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.errorConstADC[i];
+		mainFile >> data_.errorConstADC[i];
 	mainFile.close();
 }
 
-void processing::readDataFormFromFiles()	{
+void Processing::readDataFormFromFiles()	{
 	ifstream	mainFile;
-	mainFile.open(pathToSave + string("dataForm"));
+	mainFile.open(pathToSave_ + string("dataForm"));
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.transformationForm[i];
+		mainFile >> data_.transformationForm[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.errorForm[i];
+		mainFile >> data_.errorForm[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.constForm[i];
+		mainFile >> data_.constForm[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.errorConstForm[i];
+		mainFile >> data_.errorConstForm[i];
 	mainFile.close();
 }
 
-void processing::writeDataToFiles()	{
-	ofstream mainFile(pathToSave + string("data"));
+void Processing::writeDataToFiles()	{
+	ofstream mainFile(pathToSave_ + string("data"));
 //	mainFile << "FaA\t";
 	for (int i = 0; i < 4; i++)
-		mainFile << setw(5) << data.transformationADC[i] << "\t";
+		mainFile << setw(5) << data_.transformationADC[i] << "\t";
 	mainFile << endl;
 //	mainFile << "ErA\t";
 	for (int i = 0; i < 4; i++)
-		mainFile << setw(5) << data.errorADC[i] << "\t";
+		mainFile << setw(5) << data_.errorADC[i] << "\t";
 	mainFile << endl;
 //	mainFile << "CoA\t";
 	for (int i = 0; i < 4; i++)
-		mainFile << setw(5) << data.constADC[i] << "\t";
+		mainFile << setw(5) << data_.constADC[i] << "\t";
 	mainFile << endl;
 //	mainFile << "EcA\t";
 	for (int i = 0; i < 4; i++)
-		mainFile << setw(5) << data.errorConstADC[i] << "\t";
+		mainFile << setw(5) << data_.errorConstADC[i] << "\t";
 	mainFile << endl;
 //	mainFile << "FaF\t";
 	for (int i = 0; i < 2; i++)
-		mainFile << setw(5) << data.transformationForm[i] << "\t";
+		mainFile << setw(5) << data_.transformationForm[i] << "\t";
 	mainFile << endl;
 //	mainFile << "ErF\t";
 	for (int i = 0; i < 2; i++)
-		mainFile << setw(5) << data.errorForm[i] << "\t";
+		mainFile << setw(5) << data_.errorForm[i] << "\t";
 	mainFile << endl;
 //	mainFile << "CoF\t";
 	for (int i = 0; i < 2; i++)
-		mainFile << setw(5) << data.constForm[i] << "\t";
+		mainFile << setw(5) << data_.constForm[i] << "\t";
 	mainFile << endl;
 //	mainFile << "EcF\t";
 	for (int i = 0; i < 2; i++)
-		mainFile << setw(5) << data.errorConstForm[i] << "\t";
+		mainFile << setw(5) << data_.errorConstForm[i] << "\t";
 	mainFile << endl;
 	mainFile.close();
 }
 
-void processing::readDataFromFiles()	{
+void Processing::readDataFromFiles()	{
 	ifstream	mainFile;
-	mainFile.open(pathToSave + string("data"));
+	mainFile.open(pathToSave_ + string("data"));
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.transformationADC[i];
+		mainFile >> data_.transformationADC[i];
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.errorADC[i];
+		mainFile >> data_.errorADC[i];
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.constADC[i];
+		mainFile >> data_.constADC[i];
 	for (int i = 0; i < 4; i++)
-		mainFile >> data.errorConstADC[i];
+		mainFile >> data_.errorConstADC[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.transformationForm[i];
+		mainFile >> data_.transformationForm[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.errorForm[i];
+		mainFile >> data_.errorForm[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.constForm[i];
+		mainFile >> data_.constForm[i];
 	for (int i = 0; i < 2; i++)
-		mainFile >> data.errorConstForm[i];
+		mainFile >> data_.errorConstForm[i];
 	mainFile.close();
 }
 
