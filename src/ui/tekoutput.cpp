@@ -1,7 +1,8 @@
 #include "tekoutput.h"
 
-TekOutput::TekOutput(tekModule *mod, ChipModule *chip, QWidget *parent)
+TekOutput::TekOutput(tekModule *mod, PaaModule *chip, QWidget *parent)
 	: QPlainTextEdit(parent) , module_(mod) , chip_(chip),homeID_(std::this_thread::get_id())	{
+
 	setReadOnly(true);
 	logStream_.open("log",ofstream::binary | ofstream::app);
 	print("Starting tekControl");

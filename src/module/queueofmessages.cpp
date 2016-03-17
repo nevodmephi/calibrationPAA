@@ -64,15 +64,17 @@ void	QueueOfMessages::update(const Subject* subject)	{
 		if (clientData_->getMessage() == Client::Message::readyRead)	{
 			static int packetCount = 0;
 			message_	= Message::dataRead;
-            if (packetCount < 200)	{
-				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
-				packetCount++;
-			}
-            if (packetCount == 200)	{
-				packetCount = 0;
-				notify();
-				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
-			}
+//			if (packetCount < 200)	{
+//				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
+//				packetCount++;
+//			}
+//			if (packetCount == 200)	{
+//				packetCount = 0;
+//				notify();
+//				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
+//			}
+			data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
+			notify();
 		}
 	}
 }

@@ -3,8 +3,8 @@
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)	{
 	module_			= new tekModule;
-	calculation_		= new Processing;
-	chip_			= new ChipModule	(module_, calculation_);
+	calculation_	= new Processing;
+	chip_			= new PaaModule	(module_, calculation_, "192.168.2.41");
 	output_			= new TekOutput		(module_, chip_, this);
 	settings_		= new TekSettings	(module_,tr("Settings"));
 	plots_			= new Plots	(chip_, this);
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 		for (int j = 0; j < 4; j++)
 			dataTable_->setItem(i, j, &dataItems_[i][j]);
 
-	connect(exitButton_,		&QPushButton::clicked,
+	connect(exitButton_,	&QPushButton::clicked,
 			this,			&MainWindow::close);
 	connect(startButton_,	&QPushButton::clicked,
 			this,			&MainWindow::startButtonClick);
@@ -38,9 +38,9 @@ MainWindow::MainWindow(QWidget *parent)
 			this,			&MainWindow::goButtonClick);
 	connect(showSettings_,	&QPushButton::clicked,
 			this,			&MainWindow::showSettingsClick);
-	connect(stopButton_,		&QPushButton::clicked,
+	connect(stopButton_,	&QPushButton::clicked,
 			this,			&MainWindow::stopButtonClick);
-	connect(showTables_,		&QPushButton::clicked,
+	connect(showTables_,	&QPushButton::clicked,
 			this,			&MainWindow::showTablesClick);
 	connect(timerUpdate_,	&QTimer::timeout,
 			this,			&MainWindow::dataUpdate);
@@ -243,12 +243,12 @@ void MainWindow::dataUpdate()	{
 	if (chip_->getDataUpdate() == true)	{
 		plots_->dataUpdate();
 		auto mode = chip_->returnMode();
-		if (mode == ChipModule::mode::amp)	{
+		if (mode == PaaModule::mode::amp)	{
 			auto	lastAmp	= chip_->returnLastAmp();
 			output_->appendText(string("Amp:    ") + std::to_string(lastAmp.first));
 			output_->appendText(string("Code:   ") + std::to_string(lastAmp.second[0]) + string("\t") + std::to_string(lastAmp.second[1]));
 		}
-		if (mode == ChipModule::mode::form)	{
+		if (mode == PaaModule::mode::form)	{
 			auto	lastThresh	= chip_->returnLastThresh();
 			output_->appendText(string("Thresh: ") + std::to_string(lastThresh.first));
 			output_->appendText(string("Code:   ") + std::to_string(lastThresh.second));

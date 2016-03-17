@@ -17,14 +17,13 @@
 #include "tekoutput.h"
 #include "teksettings.h"
 #include "plots.h"
-#include "../tekVisa/processing.h"
-#include "chip/blocks.h"
+#include "../calibration/processing.h"
+#include "../module/paamodule.h"
 
 class MainWindow : public QMainWindow	{
 	Q_OBJECT
 
 public:
-	using	itemsArray	=	std::array<	std::array<QTableWidgetItem, 4>, 4>;
 	using	string		=	std::string;
 
 	MainWindow(QWidget *parent = nullptr);
@@ -49,6 +48,14 @@ protected:
 	void	writeToHomingTable();
 
 private:
+	tekModule	*module_;
+	TekOutput	*output_;
+	TekSettings *settings_;
+	PaaModule	*chip_;
+	Plots		*plots_;
+	Processing	*calculation_;
+	QTimer		*timerUpdate_;
+
 	QWidget		*centralWidget_;
 	QPushButton *startButton_;
 	QPushButton *goButton_;
@@ -68,16 +75,8 @@ private:
 	QTableWidget*dataTable_;
 	QTableWidget*homingTable_;
 	QHBoxLayout	*tableHLayout_;
-	itemsArray	homingItems_;
-	itemsArray	dataItems_;
-
-	tekModule	*module_;
-	TekOutput	*output_;
-	TekSettings *settings_;
-	ChipModule	*chip_;
-	Plots	*plots_;
-	Processing	*calculation_;
-	QTimer*		timerUpdate_;
+	std::array<	std::array<QTableWidgetItem, 4>, 4>	homingItems_;
+	std::array<	std::array<QTableWidgetItem, 4>, 4>	dataItems_;
 };
 
 #endif // MAINWINDOW_H

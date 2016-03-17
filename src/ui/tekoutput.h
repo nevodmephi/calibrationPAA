@@ -10,8 +10,8 @@
 
 #include "../observer/observer.h"
 #include "../tekVisa/genmodule.h"
-#include "../tekVisa/chipmodule.h"
-#include "types.hpp"
+#include "../module/paamodule.h"
+#include "types.h"
 
 class TekOutput : public QPlainTextEdit, public Observer	{
 	Q_OBJECT
@@ -22,7 +22,7 @@ public:
 	using	ofstream	=	std::ofstream;
 	using	string		=	std::string;
 
-	explicit TekOutput(tekModule *sub, ChipModule *chip, QWidget *parent = nullptr);
+	explicit TekOutput(tekModule *sub, PaaModule *chip, QWidget *parent = nullptr);
 	~TekOutput();
 
 	void	printAction(const ActionInfo_s &act);
@@ -40,7 +40,7 @@ protected:
 private:
 	mutex		outputLock_;
 	tekModule	*module_;
-	ChipModule	*chip_;
+	PaaModule	*chip_;
 	ofstream	logStream_;
 	threadId	homeID_;
 };

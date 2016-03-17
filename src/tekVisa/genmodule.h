@@ -10,8 +10,6 @@
 #include "src/observer/observer.h"
 #include "tektypes.h"
 
-//#include "chip/defines.h"
-
 class GenModule : public Subject	{
 public:
 	using	string			=	std::string;

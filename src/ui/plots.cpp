@@ -1,6 +1,6 @@
 #include "plots.h"
 
-Plots::Plots(ChipModule *chip, QWidget *parent)
+Plots::Plots(PaaModule *chip, QWidget *parent)
 	: QWidget(parent), chip_(chip)	{
 	ampFirst_	=	new QCustomPlot(this);
 	ampSecond_	=	new QCustomPlot(this);
@@ -54,10 +54,8 @@ void Plots::update(const Subject *subject)	{
 void Plots::dataUpdate()	{
 	std::mutex	block;
 	block.lock();
-	if (chip_->getDataUpdate() == true)
-	{
-		if (chip_->returnMode() == ChipModule::mode::amp)
-		{
+	if (chip_->getDataUpdate() == true)		{
+		if (chip_->returnMode() == PaaModule::mode::amp)	{
 			ampFirstData_.first.push_back(-chip_->returnLastAmp().first);
 			ampFirstData_.second.push_back(-chip_->returnLastAmp().second[0]);
 			ampSecondData_.first.push_back(-chip_->returnLastAmp().first);
@@ -66,11 +64,9 @@ void Plots::dataUpdate()	{
 			renderSecond();
 		}
 
-		if (chip_->returnMode() == ChipModule::mode::form)
-		{
+		if (chip_->returnMode() == PaaModule::mode::form)	{
 			auto thresh = chip_->returnLastThresh();
-			if (thresh.first != -100 && thresh.second != -100)
-			{
+			if (thresh.first != -100 && thresh.second != -100)	{
 				formData_.first.push_back(chip_->returnLastThresh().first);
 				formData_.second.push_back(-chip_->returnLastThresh().second);
 				renderForm();

@@ -5,10 +5,10 @@
 #include <QCheckBox>
 #include <QVector>
 #include <QBoxLayout>
+#include <qcustomplot.h>
 
 #include "../observer/observer.h"
-#include "../tekVisa/chipmodule.h"
-#include "qcustomplot.h"
+#include "../module/paamodule.h"
 
 class Plots : public QWidget, public Observer	{
 	Q_OBJECT
@@ -16,7 +16,7 @@ class Plots : public QWidget, public Observer	{
 public:
 	using	qvecdoubPair	=	std::pair<QVector<double>,	QVector<double>>;
 
-	explicit Plots(ChipModule *chip, QWidget *parent = nullptr);
+	explicit Plots(PaaModule *chip, QWidget *parent = nullptr);
 	~Plots();
 
 	void	update(const Subject *subject);
@@ -36,7 +36,7 @@ protected:
 	void	createForm();
 
 private:
-	ChipModule*		chip_;
+	PaaModule*		chip_;
 	QCustomPlot*	ampFirst_;
 	QCustomPlot*	ampSecond_;
 	QCustomPlot*	form_;

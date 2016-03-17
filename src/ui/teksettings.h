@@ -11,8 +11,8 @@
 
 #include "../observer/observer.h"
 #include "../tekVisa/genmodule.h"
-#include "../tekVisa/chipmodule.h"
-#include "types.hpp"
+#include "../module/paamodule.h"
+#include "types.h"
 
 class TekSettings : public QGroupBox, public Observer	{
 	Q_OBJECT
@@ -47,7 +47,7 @@ protected:
 
 private:
 	tekModule	*module_;
-	ChipModule	*chip_;
+	PaaModule	*chip_;
 	int			channel_;
 
 	QFormLayout	*layout_;
