@@ -36,20 +36,21 @@ public:
 	void		writeRegister3002(uint32_t address, uint32_t data);
 
 	const std::vector<unsigned char>&	getData()		const;
-	Message							getMessage()	const;
+	Message								getMessage()	const;
 
 protected slots:
 	void		onSocketConnected();
 	void		onSocketDisconnected();
 	void		onSocketReadyRead();
 	void		onSocketError(QAbstractSocket::SocketError	error);
+
 private:
-	QTcpSocketPtr				socket_;
-	QHostAddressPtr				address_;
-	uint16_t					port_;
-	std::vector<unsigned char>	data_;
-	Message						message_;
-	uint32_t					sleepTime_;
+	QTcpSocketPtr		socket_;
+	QHostAddressPtr		address_;
+	uint16_t			port_;
+	std::vector<uchar>	data_;
+	Message				message_;
+	uint32_t			sleepTime_;
 };
 
 #endif // CLIENT_H

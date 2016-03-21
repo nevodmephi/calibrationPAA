@@ -2,12 +2,14 @@
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)	{
-	module_			= new tekModule;
-	calculation_	= new Processing;
-	chip_			= new PaaModule	(module_, calculation_, "192.168.2.41");
-	output_			= new TekOutput		(module_, chip_, this);
-	settings_		= new TekSettings	(module_,tr("Settings"));
-	plots_			= new Plots	(chip_, this);
+
+//	module_			= new tekModule;
+//	calculation_	= new Calculation;
+//	chip_			= new PaaModule	(module_, calculation_, "192.168.2.41");
+	calibration_	= new Calibration;
+	output_			= new TekOutput		(calibration_->getGenModule().get(), calibration_->getPaaModule().get(), this);
+	settings_		= new TekSettings	(calibration_->getGenModule().get(),tr("Settings"));
+	plots_			= new Plots			(calibration_->getPaaModule().get(), this);
 	timerUpdate_	= new QTimer		(this);
 
 	initializeElements();
@@ -46,10 +48,10 @@ MainWindow::MainWindow(QWidget *parent)
 			this,			&MainWindow::dataUpdate);
 
 	resize(1024, 768);
-	module_->attach(output_);
-	module_->attach(settings_);
-	chip_->attach(output_);
-	chip_->attach(plots_);
+	//	module_->attach(output_);
+	//	module_->attach(settings_);
+	//	chip_->attach(output_);
+	//	chip_->attach(plots_);
 }
 
 MainWindow::~MainWindow()	{
@@ -72,7 +74,7 @@ MainWindow::~MainWindow()	{
 
 	delete	centralWidget_;
 //	delete	calculation;
-	delete	chip_;
+//	delete	chip_;
 	delete	timerUpdate_;
 }
 
@@ -135,24 +137,24 @@ void MainWindow::addToList(const string &addStr)	{
 }
 
 void MainWindow::startButtonClick()	{
-	module_->setChannel( settings_->currentChannel() + 1);
-	bool status = module_->openSession();
-	if (status == true)
-		output_->appendText(string("Generator Connected"));
-	else
-		output_->appendText(string("Generator Connection Error"));
-	module_->notify();
-	status = chip_->openSession();
-	if (status == true)
-		output_->appendText(string("Controller Connected"));
-	else
-		output_->appendText(string("Controller Connection Error"));
+//	module_->setChannel( settings_->currentChannel() + 1);
+//	bool status = module_->openSession();
+//	if (status == true)
+//		output_->appendText(string("Generator Connected"));
+//	else
+//		output_->appendText(string("Generator Connection Error"));
+//	module_->notify();
+//	status = chip_->openSession();
+//	if (status == true)
+//		output_->appendText(string("Controller Connected"));
+//	else
+//		output_->appendText(string("Controller Connection Error"));
 }
 
 void MainWindow::endButtonClick()	{
-	module_->closeSession();
-	chip_->closeSession();
-	module_->notify();
+//	module_->closeSession();
+//	chip_->closeSession();
+//	module_->notify();
 }
 
 void MainWindow::showSettingsClick()	{
@@ -163,66 +165,66 @@ void MainWindow::showSettingsClick()	{
 }
 
 void MainWindow::goButtonClick()	{
-	if (numberChipL_->text().isEmpty() == true)
-		return;
-	int howChipChannel = chip_->searchAndSetChipChannel();
-	if (howChipChannel == -1)	{
-		std::cout << "dsd" << std::endl;
-		return;
-	}
-	if (howChipChannel == 0)	{
-		chip_->setChannels(std::pair<int, int>(0, 1));
-		chip_->setGroupChannel(0);
-		calculation_->setChipChannel(0);
-	}
-	if (howChipChannel == 1)	{
-		chip_->setChannels(std::pair<int, int>(2, 3));
-		chip_->setGroupChannel(1);
-		calculation_->setChipChannel(1);
-	}
-	if (howChipChannel == 2)	{
-		chip_->setChannels(std::pair<int, int>(4, 5));
-		chip_->setGroupChannel(0);
-		calculation_->setChipChannel(0);
-	}
-	if (howChipChannel == 3)	{
-		chip_->setChannels(std::pair<int, int>(6, 7));
-		chip_->setGroupChannel(1);
-		calculation_->setChipChannel(1);
-	}
+//	if (numberChipL_->text().isEmpty() == true)
+//		return;
+//	int howChipChannel = chip_->searchAndSetChipChannel();
+//	if (howChipChannel == -1)	{
+//		std::cout << "dsd" << std::endl;
+//		return;
+//	}
+//	if (howChipChannel == 0)	{
+//		chip_->setChannels(std::pair<int, int>(0, 1));
+//		chip_->setGroupChannel(0);
+//		calculation_->setChipChannel(0);
+//	}
+//	if (howChipChannel == 1)	{
+//		chip_->setChannels(std::pair<int, int>(2, 3));
+//		chip_->setGroupChannel(1);
+//		calculation_->setChipChannel(1);
+//	}
+//	if (howChipChannel == 2)	{
+//		chip_->setChannels(std::pair<int, int>(4, 5));
+//		chip_->setGroupChannel(0);
+//		calculation_->setChipChannel(0);
+//	}
+//	if (howChipChannel == 3)	{
+//		chip_->setChannels(std::pair<int, int>(6, 7));
+//		chip_->setGroupChannel(1);
+//		calculation_->setChipChannel(1);
+//	}
 
-	string	pathToSave	= pathToSaveL_->text().toStdString() + numberChipL_->text().toStdString() + string("/");
-	QDir().mkdir(pathToSaveL_->text() + numberChipL_->text());
-	chip_->setPathToSave(pathToSave);
-	calculation_->setPathToFile(pathToSave);
-	plots_->allClear();
-	chip_->calibration(50, 10);
-	timerUpdate_->start(20);
+//	string	pathToSave	= pathToSaveL_->text().toStdString() + numberChipL_->text().toStdString() + string("/");
+//	QDir().mkdir(pathToSaveL_->text() + numberChipL_->text());
+//	chip_->setPathToSave(pathToSave);
+//	calculation_->setPathToFile(pathToSave);
+//	plots_->allClear();
+//	chip_->calibration(50, 10);
+//	timerUpdate_->start(20);
 }
 
 void MainWindow::stopButtonClick()	{
-	chip_->stopCalibration();
-	timerUpdate_->stop();
+//	chip_->stopCalibration();
+//	timerUpdate_->stop();
 }
 
 void MainWindow::showTablesClick()	{
-	if (tablesWidget_->isHidden() == true)	{
-		calculation_->setPathToFile("/home/main/data/");
-		calculation_->readHomingFromFiles();
-		writeToHomingTable();
-		writeToDataTable();
-		tablesWidget_->show();
-	}
-	else
-		tablesWidget_->hide();
+//	if (tablesWidget_->isHidden() == true)	{
+//		calculation_->setPathToFile("/home/main/data/");
+//		calculation_->readHomingFromFiles();
+//		writeToHomingTable();
+//		writeToDataTable();
+//		tablesWidget_->show();
+//	}
+//	else
+//		tablesWidget_->hide();
 }
 
 void MainWindow::writeToHomingTable()	{
-	for (int i = 0; i < 4; i++)
-		for (int j = 0; j < 4; j++)	{
-			homingItems_[i][j].setText(
-						QString::number(calculation_->returnHoming()[i][j]));
-		}
+//	for (int i = 0; i < 4; i++)
+//		for (int j = 0; j < 4; j++)	{
+//			homingItems_[i][j].setText(
+//						QString::number(calculation_->returnHoming()[i][j]));
+//		}
 }
 
 void MainWindow::writeToDataTable()	{
@@ -238,21 +240,21 @@ void MainWindow::writeToDataTable()	{
 }
 
 void MainWindow::dataUpdate()	{
-	std::mutex	block;
-	block.lock();
-	if (chip_->getDataUpdate() == true)	{
-		plots_->dataUpdate();
-		auto mode = chip_->returnMode();
-		if (mode == PaaModule::mode::amp)	{
-			auto	lastAmp	= chip_->returnLastAmp();
-			output_->appendText(string("Amp:    ") + std::to_string(lastAmp.first));
-			output_->appendText(string("Code:   ") + std::to_string(lastAmp.second[0]) + string("\t") + std::to_string(lastAmp.second[1]));
-		}
-		if (mode == PaaModule::mode::form)	{
-			auto	lastThresh	= chip_->returnLastThresh();
-			output_->appendText(string("Thresh: ") + std::to_string(lastThresh.first));
-			output_->appendText(string("Code:   ") + std::to_string(lastThresh.second));
-		}
-	}
-	block.unlock();
+//	std::mutex	block;
+//	block.lock();
+//	if (chip_->getDataUpdate() == true)	{
+//		plots_->dataUpdate();
+//		auto mode = chip_->returnMode();
+//		if (mode == PaaModule::mode::amp)	{
+//			auto	lastAmp	= chip_->returnLastAmp();
+//			output_->appendText(string("Amp:    ") + std::to_string(lastAmp.first));
+//			output_->appendText(string("Code:   ") + std::to_string(lastAmp.second[0]) + string("\t") + std::to_string(lastAmp.second[1]));
+//		}
+//		if (mode == PaaModule::mode::form)	{
+//			auto	lastThresh	= chip_->returnLastThresh();
+//			output_->appendText(string("Thresh: ") + std::to_string(lastThresh.first));
+//			output_->appendText(string("Code:   ") + std::to_string(lastThresh.second));
+//		}
+//	}
+//	block.unlock();
 }

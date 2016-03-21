@@ -1,61 +1,40 @@
 #ifndef PROCESSING_H
 #define PROCESSING_H
 
-#include <fstream>
-#include <iostream>
+#include <condition_variable>
+#include <mutex>
+#include <vector>
+#include <string>
 #include <iomanip>
-#include <cmath>
-#include <cstdint>
+#include <fstream>
 
-#include "src/tekVisa/tektypes.h"
+#include "../module/queueofmessages.h"
+#include "../observer/observer.h"
 
-class Processing	{
+class Processing : public Observer, public std::enable_shared_from_this<Processing>	{
 public:
-	using	int32Vec	=	std::vector<int32_t>;
-	using	string		=	std::string;
-	using	homingData	=	std::array< std::array< int, 4>, 4>;
+	using QueuePtr	= std::shared_ptr<QueueOfMessages>;
 
-	explicit Processing();
+	Processing(QueuePtr	clientQueue);
 	~Processing();
 
-	struct	factorTransformation
-	{
-		double	factor;
-		double	error;
-		double	maxDeviation;
-		double	deltaK;
-		double	deltaB;
-	};
+	void	update(const Subject* subject);
 
-	factorTransformation	getFactorTransformation(const int32Vec& ampX, const int32Vec& codeY);
-	double					getFactorIntegral(double maxDeviation);
-
-	void	computeHomingValues(int chipChannelV4, const int32Vec& minDeviation, const int32Vec& maxDeviation);
-	void	readDataADCFromFiles();
-	void	readDataFormFromFiles();
-	void	writeDataToFiles();
-	void	readDataFromFiles();
-	void	writeDataADCToFiles();
-	void	writeDataFormToFiles();
-	void	readHomingFromFiles();
-	void	writeHomingToFiles();
-	void	computeForOneRecordAmp();
-	void	computeForOneRecordForm();
-	void	readOneRecordAmp(const string& pathToFile);
-	void	readOneRecordForm(const string& pathToFile);
-	void	setPathToFile(const string& pathToSaveInput);
-	void	setChipChannel(int chipGroupChannel);
-	const homingData&	returnHoming()	const;
-	const DataChip&		returnData()	const;
-
+	void	setPathToSave(const std::string&	path);
+	void	createFolders(const std::string&	path);
+protected:
+	void	controlQueue();
+	void	parse(const std::vector<unsigned char>&	data);
+	void	saveDataHowOldProgram(const std::vector<std::pair<int, std::vector<std::vector<int16_t>>>> &parserData, const std::string& path, int numberFile);
 private:
-	DataChip	data_;
-	homingData	homing_;
-	int32Vec	vecX_;
-	int32Vec	vecFirst_;
-	int32Vec	vecSecond_;
-	string      pathToSave_;
-	int			howChipChannel_;
+	QueuePtr														clientQueue_;
+	std::queue<std::vector<unsigned char>>							buffer_;
+	std::vector<std::pair<int, std::vector<std::vector<int16_t>>>>	data_;
+//	std::vector<std::vector<std::vector<int16_t>>>					data_;
+	std::string														pathToSave_;
+
+	std::condition_variable											queueCheck_;
+	std::mutex														lockQueueCheck_;
 };
 
 #endif // PROCESSING_H

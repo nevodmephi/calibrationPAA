@@ -1,6 +1,6 @@
 #include "paamodule.h"
 
-PaaModule::PaaModule(GenModule *tekMod, Processing *calculation, const std::string& ip)
+PaaModule::PaaModule(GenModule *tekMod, Calculation *calculation, const std::string& ip)
 	:	module_(tekMod), calculation_(calculation)	{
 
 	howChipChannel_.first = 0;
@@ -55,7 +55,7 @@ void	PaaModule::tekModuleSetLowLevel(int channel, int level)	{
 
 void	PaaModule::setThresh(int numberChipChannel, int codeThresh)	{
 	//WARNING
-	adc_->writeThreshold(numberChipChannel, codeThresh);
+	adc_->writeThreshold(static_cast<uint32_t>(numberChipChannel), static_cast<uint16_t>(codeThresh));
 }
 
 void	PaaModule::mountThresh()	{

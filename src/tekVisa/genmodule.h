@@ -5,6 +5,7 @@
 #include <queue>
 #include <sstream>
 #include <thread>
+
 #include "include/visa/visa.h"
 #include "include/visa/visatype.h"
 #include "src/observer/observer.h"

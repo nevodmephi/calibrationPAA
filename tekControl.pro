@@ -23,7 +23,9 @@ SOURCES += \
     src/module/station.cpp \
     src/tekVisa/genmodule.cpp \
     src/module/paamodule.cpp \
-    src/calibration/processing.cpp
+    src/calibration/calibration.cpp \
+    src/calibration/processing.cpp \
+    src/calibration/calculation.cpp
 
 HEADERS  += \
 	src/observer/observer.h \
@@ -44,11 +46,13 @@ HEADERS  += \
     src/module/paamodule.h \
     src/tekVisa/genmodule.h \
     src/ui/types.h \
-    src/calibration/processing.h
+    src/calibration/calibration.h \
+    src/calibration/processing.h \
+    src/calibration/calculation.h
 
 LIBS        +=	-L$$PWD/libs/ -lvisa
 #LIBS         += -lvisa
-LIBS         += -lqcustomplot
+LIBS        += -lqcustomplot
 INCLUDEPATH +=	  $$PWD/lib/
 
 release {

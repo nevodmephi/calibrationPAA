@@ -17,8 +17,7 @@
 #include "tekoutput.h"
 #include "teksettings.h"
 #include "plots.h"
-#include "../calibration/processing.h"
-#include "../module/paamodule.h"
+#include "../calibration/calibration.h"
 
 class MainWindow : public QMainWindow	{
 	Q_OBJECT
@@ -48,12 +47,13 @@ protected:
 	void	writeToHomingTable();
 
 private:
-	tekModule	*module_;
+	Calibration	*calibration_;
+//	tekModule	*module_;
 	TekOutput	*output_;
 	TekSettings *settings_;
-	PaaModule	*chip_;
+//	PaaModule	*chip_;
 	Plots		*plots_;
-	Processing	*calculation_;
+//	Calculation	*calculation_;
 	QTimer		*timerUpdate_;
 
 	QWidget		*centralWidget_;
