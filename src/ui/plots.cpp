@@ -52,41 +52,41 @@ void Plots::update(const Subject *subject)	{
 }
 
 void Plots::dataUpdate()	{
-	std::mutex	block;
-	block.lock();
-	if (chip_->getDataUpdate() == true)		{
-		if (chip_->returnMode() == PaaModule::mode::amp)	{
-			ampFirstData_.first.push_back(-chip_->returnLastAmp().first);
-			ampFirstData_.second.push_back(-chip_->returnLastAmp().second[0]);
-			ampSecondData_.first.push_back(-chip_->returnLastAmp().first);
-			ampSecondData_.second.push_back(-chip_->returnLastAmp().second[1]);
-			renderFirst();
-			renderSecond();
-		}
+//	std::mutex	block;
+//	block.lock();
+//	if (chip_->getDataUpdate() == true)		{
+//		if (chip_->returnMode() == PaaModule::mode::amp)	{
+//			ampFirstData_.first.push_back(-chip_->returnLastAmp().first);
+//			ampFirstData_.second.push_back(-chip_->returnLastAmp().second[0]);
+//			ampSecondData_.first.push_back(-chip_->returnLastAmp().first);
+//			ampSecondData_.second.push_back(-chip_->returnLastAmp().second[1]);
+//			renderFirst();
+//			renderSecond();
+//		}
 
-		if (chip_->returnMode() == PaaModule::mode::form)	{
-			auto thresh = chip_->returnLastThresh();
-			if (thresh.first != -100 && thresh.second != -100)	{
-				formData_.first.push_back(chip_->returnLastThresh().first);
-				formData_.second.push_back(-chip_->returnLastThresh().second);
-				renderForm();
-			}
-		}
-		chip_->setDataUpdateFalse();
-	}
-	block.unlock();
+//		if (chip_->returnMode() == PaaModule::mode::form)	{
+//			auto thresh = chip_->returnLastThresh();
+//			if (thresh.first != -100 && thresh.second != -100)	{
+//				formData_.first.push_back(chip_->returnLastThresh().first);
+//				formData_.second.push_back(-chip_->returnLastThresh().second);
+//				renderForm();
+//			}
+//		}
+//		chip_->setDataUpdateFalse();
+//	}
+//	block.unlock();
 }
 
 void Plots::allClear()	{
-	ampFirstData_.first.clear();
-	ampFirstData_.second.clear();
-	ampSecondData_.first.clear();
-	ampSecondData_.second.clear();
-	formData_.first.clear();
-	formData_.second.clear();
-	ampFirst_->replot();
-	ampSecond_->replot();
-	form_->replot();
+//	ampFirstData_.first.clear();
+//	ampFirstData_.second.clear();
+//	ampSecondData_.first.clear();
+//	ampSecondData_.second.clear();
+//	formData_.first.clear();
+//	formData_.second.clear();
+//	ampFirst_->replot();
+//	ampSecond_->replot();
+//	form_->replot();
 }
 
 void Plots::createFirst()	{

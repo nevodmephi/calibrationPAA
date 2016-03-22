@@ -1,10 +1,10 @@
 #include "calibration.h"
 
-Calibration::Calibration()	{
+Calibration::Calibration(const std::string &ip, const std::string &resName)	{
 //	:	genModule_(genModule), paaModule_(paaModule)	{
-	genModule_		= std::make_shared<GenModule>();
+	genModule_		= std::make_shared<GenModule>(resName);
 	calculation_	= std::make_shared<Calculation>();
-	paaModule_		= std::make_shared<PaaModule>(genModule_.get(), calculation_.get(), "192.168.2.41");
+	paaModule_		= std::make_shared<PaaModule>(genModule_, calculation_, ip);
 }
 
 Calibration::~Calibration()	{
@@ -53,22 +53,7 @@ void Calibration::searchThreshold()	{
 }
 
 void Calibration::setThreshold(int numberChipChannel, int codeThresh)	{
-	paaModule_->setThresh(numberChipChannel, codeThresh);
-}
-
-void Calibration::tekModuleActivateChannel(int channel, bool status)	{
-	genModule_->setChannel(channel + 1);
-	genModule_->activateChannel(status);
-}
-
-void Calibration::tekModuleSetHighLevel(int channel, int level)	{
-	genModule_->setChannel(channel + 1);
-	genModule_->setHighLevel(level);
-}
-
-void Calibration::tekModuleSetLowLevel(int channel, int level)	{
-	genModule_->setChannel(channel + 1);
-	genModule_->setLowLevel(level);
+//	paaModule_->setThresh(numberChipChannel, codeThresh);
 }
 
 std::shared_ptr<GenModule> Calibration::getGenModule() const	{

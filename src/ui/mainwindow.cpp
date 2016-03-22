@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
 //	module_			= new tekModule;
 //	calculation_	= new Calculation;
 //	chip_			= new PaaModule	(module_, calculation_, "192.168.2.41");
-	calibration_	= new Calibration;
+	calibration_	= new Calibration	("192.168.2.41", "USB?*INSTR{VI_ATTR_MANF_ID==0x0699}");
 	output_			= new TekOutput		(calibration_->getGenModule().get(), calibration_->getPaaModule().get(), this);
 	settings_		= new TekSettings	(calibration_->getGenModule().get(),tr("Settings"));
 	plots_			= new Plots			(calibration_->getPaaModule().get(), this);

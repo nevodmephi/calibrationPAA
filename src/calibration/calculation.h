@@ -11,9 +11,6 @@
 
 class Calculation	{
 public:
-	using	int32Vec	=	std::vector<int32_t>;
-	using	string		=	std::string;
-	using	homingData	=	std::array<std::array<int, 4>, 4>;
 
 	explicit Calculation();
 	~Calculation();
@@ -26,10 +23,12 @@ public:
 		double	deltaB;
 	};
 
-	factorTransformation	getFactorTransformation(const int32Vec& ampX, const int32Vec& codeY);
+	factorTransformation	getFactorTransformation(const std::vector<int32_t>& ampX,
+													const std::vector<int32_t>& codeY);
 	double					getFactorIntegral(double maxDeviation);
 
-	void	computeHomingValues(int chipChannelV4, const int32Vec& minDeviation, const int32Vec& maxDeviation);
+	void	computeHomingValues(int chipChannelV4, const std::vector<int32_t>& minDeviation,
+								const std::vector<int32_t>& maxDeviation);
 	void	readDataADCFromFiles();
 	void	readDataFormFromFiles();
 	void	writeDataToFiles();
@@ -40,21 +39,21 @@ public:
 	void	writeHomingToFiles();
 	void	computeForOneRecordAmp();
 	void	computeForOneRecordForm();
-	void	readOneRecordAmp(const string& pathToFile);
-	void	readOneRecordForm(const string& pathToFile);
-	void	setPathToFile(const string& pathToSaveInput);
+	void	readOneRecordAmp(const std::string& pathToFile);
+	void	readOneRecordForm(const std::string& pathToFile);
+	void	setPathToFile(const std::string& pathToSaveInput);
 	void	setChipChannel(int chipGroupChannel);
-	const homingData&	returnHoming()	const;
+	const std::array<std::array<int, 4>, 4>&	returnHoming()	const;
 	const DataChip&		returnData()	const;
 
 private:
 	DataChip	data_;
-	homingData	homing_;
-	int32Vec	vecX_;
-	int32Vec	vecFirst_;
-	int32Vec	vecSecond_;
-	string      pathToSave_;
+	std::string	pathToSave_;
 	int			howChipChannel_;
+	std::vector<int32_t>	vecX_;
+	std::vector<int32_t>	vecFirst_;
+	std::vector<int32_t>	vecSecond_;
+	std::array<std::array<int, 4>, 4>	homing_;
 };
 
 #endif // CALCULATION_H

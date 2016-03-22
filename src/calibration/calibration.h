@@ -18,7 +18,7 @@ public:
 	enum class mode
 	{amp, form};
 
-	Calibration();
+	Calibration(const std::string& ip, const std::string& resName);
 	~Calibration();
 
 	std::pair<bool, bool>	openSessions();
@@ -38,9 +38,6 @@ public:
 
 protected:
 	void	searchThreshold();
-	void	tekModuleActivateChannel(int channel, bool status);
-	void	tekModuleSetHighLevel(int channel, int level);
-	void	tekModuleSetLowLevel(int channel, int level);
 	void	setThreshold(int numberChipChannel, int codeThresh);
 
 private:

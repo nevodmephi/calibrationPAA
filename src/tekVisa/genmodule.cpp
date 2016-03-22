@@ -1,11 +1,17 @@
 #include "genmodule.h"
 
-GenModule::GenModule()	{
+GenModule::GenModule(const std::__cxx11::string &ip)
+	:	ip_(ip)	{
+
 	active = false;
 	channel_ = 0;
 	setDefaultSettings(0);
 	setDefaultSettings(1);
 	loadSettigs();
+}
+
+GenModule::~GenModule()	{
+
 }
 
 void GenModule::setChannel(int channel)	{
@@ -35,7 +41,8 @@ void GenModule::loadSettigs()	{
 bool GenModule::openSession()	{
 	ViStatus status;
 	ViUInt32 numInit;
-	const ViString resName = (const ViString)"USB?*INSTR{VI_ATTR_MANF_ID==0x0699}";
+//	const ViString resName = (const ViString)"USB?*INSTR{VI_ATTR_MANF_ID==0x0699}";
+	const ViString resName = const_cast<const ViString>(ip_.c_str());
 	ViChar desc[VI_FIND_BUFLEN+1];
 	status = viOpenDefaultRM(&resMN_);
 	if (status != VI_SUCCESS)	{

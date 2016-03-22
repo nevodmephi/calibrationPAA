@@ -22,10 +22,13 @@ public:
 
 	void	setPathToSave(const std::string&	path);
 	void	createFolders(const std::string&	path);
+
 protected:
 	void	controlQueue();
 	void	parse(const std::vector<unsigned char>&	data);
-	void	saveDataHowOldProgram(const std::vector<std::pair<int, std::vector<std::vector<int16_t>>>> &parserData, const std::string& path, int numberFile);
+	void	saveDataHowOldProgram(const std::vector<std::pair<int, std::vector<std::vector<int16_t>>>> &parserData,
+								  const std::string& path, int numberFile);
+
 private:
 	QueuePtr														clientQueue_;
 	std::queue<std::vector<unsigned char>>							buffer_;

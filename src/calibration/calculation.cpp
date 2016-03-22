@@ -29,7 +29,8 @@ void Calculation::setChipChannel(int chipGroupChannel)	{
 	howChipChannel_ = chipGroupChannel;
 }
 
-Calculation::factorTransformation	Calculation::getFactorTransformation(const int32Vec& ampX, const int32Vec& codeY)	{
+Calculation::factorTransformation	Calculation::getFactorTransformation(const std::vector<int32_t>& ampX,
+																		 const std::vector<int32_t>& codeY)	{
 	if (ampX.size() != codeY.size())
 		return factorTransformation({-1, -1, -1});
 
@@ -140,7 +141,8 @@ void Calculation::readHomingFromFiles()	{
 	mainFile.close();
 }
 
-void Calculation::computeHomingValues(int chipChannelV4, const int32Vec &minDeviation, const int32Vec &maxDeviation)	{
+void Calculation::computeHomingValues(int chipChannelV4, const std::vector<int32_t> &minDeviation,
+									  const std::vector<int32_t> &maxDeviation)	{
 	readHomingFromFiles();
 	vector<double> influenceChannel(4);
 	for (int i = 0; i < 4; i++)
@@ -152,7 +154,7 @@ void Calculation::computeHomingValues(int chipChannelV4, const int32Vec &minDevi
 	writeHomingToFiles();
 }
 
-void Calculation::readOneRecordAmp(const string &pathToFile)	{
+void Calculation::readOneRecordAmp(const std::string &pathToFile)	{
 	vecX_.clear();
 	vecFirst_.clear();
 	vecSecond_.clear();
@@ -177,7 +179,7 @@ void Calculation::readOneRecordAmp(const string &pathToFile)	{
 	mainFile.close();
 }
 
-void Calculation::readOneRecordForm(const string &pathToFile)	{
+void Calculation::readOneRecordForm(const std::string &pathToFile)	{
 	vecX_.clear();
 	vecFirst_.clear();
 	vecSecond_.clear();
@@ -242,15 +244,13 @@ void Calculation::computeForOneRecordForm()	{
 //	for (int i = 0; i < vecX.size(); i++)
 //		vecX[i] = vecX[i] * 6;
 	factorTransformation	exchange = getFactorTransformation(vecX_, vecFirst_);
-	if (howChipChannel_ == 0)
-	{
+	if (howChipChannel_ == 0)	{
 		data_.transformationForm[0]	= exchange.factor;
 		data_.errorForm[0]			= exchange.deltaK;
 		data_.constForm[0]			= exchange.error;
 		data_.errorConstForm[0]		= exchange.deltaB;
 	}
-	if (howChipChannel_ == 1)
-	{
+	if (howChipChannel_ == 1)	{
 		data_.transformationForm[1]	= exchange.factor;
 		data_.errorForm[1]			= exchange.deltaK;
 		data_.constForm[1]			= exchange.error;
@@ -263,7 +263,7 @@ const DataChip&	Calculation::returnData()	const	{
 	return data_;
 }
 
-const Calculation::homingData&	Calculation::returnHoming()	const	{
+const std::array<std::array<int, 4>, 4> &Calculation::returnHoming()	const	{
 	return homing_;
 }
 

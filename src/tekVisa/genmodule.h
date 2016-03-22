@@ -16,7 +16,9 @@ public:
 	using	string			=	std::string;
 	using	stringstream	=	std::stringstream;
 
-	GenModule();
+	GenModule(const std::string& ip);
+	~GenModule();
+
 	bool openSession();
 	bool closeSession();
 	bool setPing(int ping);
@@ -62,6 +64,7 @@ private:
 	ViFindList		mainFList_;
 	int				channel_;
 	GenSettings_t	settings[2];
+	std::string		ip_;
 };
 
 #endif // INTERLOCUTOR_H
