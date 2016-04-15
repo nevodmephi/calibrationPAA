@@ -4,7 +4,7 @@ Calibration::Calibration(const std::string &ip, const std::string &resName)	{
 //	:	genModule_(genModule), paaModule_(paaModule)	{
 	genModule_		= std::make_shared<GenModule>(resName);
 	calculation_	= std::make_shared<Calculation>();
-	paaModule_		= std::make_shared<PaaModule>(genModule_, calculation_, ip);
+	paaModule_		= std::make_shared<PaaModule>(ip);
 }
 
 Calibration::~Calibration()	{
@@ -62,4 +62,19 @@ std::shared_ptr<GenModule> Calibration::getGenModule() const	{
 
 std::shared_ptr<PaaModule> Calibration::getPaaModule() const	{
 	return	paaModule_;
+}
+
+void Calibration::tekModuleActivateChannel(int channel, bool status)	{
+	genModule_->setChannel(channel + 1);
+	genModule_->activateChannel(status);
+}
+
+void Calibration::tekModuleSetHighLevel(int channel, int level)	{
+	genModule_->setChannel(channel + 1);
+	genModule_->setHighLevel(level);
+}
+
+void Calibration::tekModuleSetLowLevel(int channel, int level)	{
+	genModule_->setChannel(channel + 1);
+	genModule_->setLowLevel(level);
 }

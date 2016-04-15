@@ -22,10 +22,8 @@ public:
 	using	MasterPtr		= std::shared_ptr<Master>;
 	using	AdcPtr			= std::shared_ptr<Adc>;
 	using	QueuePtr		= std::shared_ptr<QueueOfMessages>;
-	using	GenModulePtr	= std::shared_ptr<GenModule>;
-	using	CalculationPtr	= std::shared_ptr<Calculation>;
 
-	PaaModule(GenModulePtr tekMod, CalculationPtr calculation, const std::string& ip);
+	PaaModule(const std::string& ip);
 	~PaaModule();
 
 	void	update(const Subject *subject);
@@ -41,9 +39,6 @@ protected:
 	void	tekModuleSetLowLevel(int channel, int level);
 
 private:
-	GenModulePtr	module_;
-	CalculationPtr	calculation_;
-
 	HostPtr			host_;
 	MasterPtr		master_;
 	AdcPtr			adc_;

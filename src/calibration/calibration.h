@@ -39,6 +39,9 @@ public:
 protected:
 	void	searchThreshold();
 	void	setThreshold(int numberChipChannel, int codeThresh);
+	void	tekModuleActivateChannel(int channel, bool status);
+	void	tekModuleSetHighLevel(int channel, int level);
+	void	tekModuleSetLowLevel(int channel, int level);
 
 private:
 	GenModulePtr	genModule_;
