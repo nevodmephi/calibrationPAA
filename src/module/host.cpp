@@ -18,7 +18,7 @@ void	Host::update(const Subject *subject)	{
 	if (subject == clientQueue_.get())	{
 		if (clientQueue_->getMessage() == QueueOfMessages::Message::recordRead)	{
 			Record record = clientQueue_->getRecord();
-			std::cout << record.value << std::endl;
+			std::cout << record.address << "\t\t" << record.value << std::endl;
 
 //			std::fstream	file;
 //			file.open("/home/main/data", std::ios_base::app);
@@ -37,7 +37,7 @@ void	Host::update(const Subject *subject)	{
 		if (clientQueue_->getMessage() == QueueOfMessages::Message::recordWrite)	{
 			Record record = clientQueue_->getRecord();
 			resultRecord_	= record;
-			std::cout << record.value << std::endl;
+			std::cout << record.address << "\t\t" << record.value << std::endl;
 			notify();
 		}
 
@@ -204,6 +204,23 @@ void Host::writeClearDataBuffer(bool clear)	{
 	}
 }
 
+void Host::readOpticalLengthOfLink(int numberLink)	{
+	Record recordWithValue;
+	switch (numberLink)	{
+		case 0 : recordWithValue = registers_.read.optic_length_link_0;
+			break;
+		case 1 : recordWithValue = registers_.read.optic_length_link_1;
+			break;
+		case 2 : recordWithValue = registers_.read.optic_length_link_2;
+			break;
+		case 3 : recordWithValue = registers_.read.optic_length_link_3;
+			break;
+	}
+	recordWithValue.address += offset_;
+	recordWithValue.value = 0;
+	clientQueue_->addCommandToStack(recordWithValue, shared_from_this());
+}
+
 Record	Host::getRecordWithOffset(Record record)	{
 	Record	recordWithOffset(record);
 	recordWithOffset.address += offset_;
@@ -276,10 +293,14 @@ void	Host::writeSleep(uint32_t	milliseconds)	{
 	clientQueue_->addCommandToStack(record, shared_from_this());
 }
 
-Host::QueuePtr	Host::getQueue()	{
+Host::QueuePtr	Host::getQueue()	const	{
 	return	clientQueue_;
 }
 
 Record Host::getResult()	const	{
 	return	resultRecord_;
+}
+
+HostRegisters Host::getRegisters() const	{
+	return	registers_;
 }

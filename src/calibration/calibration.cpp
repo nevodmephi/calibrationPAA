@@ -1,7 +1,6 @@
 #include "calibration.h"
 
 Calibration::Calibration(const std::string &ip, const std::string &resName)	{
-//	:	genModule_(genModule), paaModule_(paaModule)	{
 	genModule_		= std::make_shared<GenModule>(resName);
 	calculation_	= std::make_shared<Calculation>();
 	paaModule_		= std::make_shared<PaaModule>(ip);
@@ -41,7 +40,7 @@ void Calibration::setGroupChannel(int channel)	{
 }
 
 void Calibration::setPathToSave(const std::string &pathToSave)	{
-
+	pathToSave_ = pathToSave;
 }
 
 void Calibration::readAndSaveInformation()	{

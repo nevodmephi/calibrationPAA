@@ -14,6 +14,7 @@ public:
 	void	deleteHost(uint32_t	numberHost);
 
 	std::shared_ptr<Station>	getPointer();
+
 protected:
 
 private:

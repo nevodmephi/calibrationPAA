@@ -1,9 +1,10 @@
 #include "client.h"
+#include <iostream>
 
 Client::Client(const std::string& address, uint16_t port)
-	:	address_(std::make_unique<QHostAddress>(QString::fromStdString(address))), port_(port) {
+	:	address_(std::make_shared<QHostAddress>(QString::fromStdString(address))), port_(port) {
 
-	socket_		= std::make_unique<QTcpSocket>(this);
+	socket_		= std::make_shared<QTcpSocket>(this);
 	message_	= Message::error;
 	sleepTime_	= 0;
 

@@ -44,7 +44,7 @@ public:
 	void	setPathToFile(const std::string& pathToSaveInput);
 	void	setChipChannel(int chipGroupChannel);
 	const std::array<std::array<int, 4>, 4>&	returnHoming()	const;
-	const DataChip&		returnData()	const;
+	const DataChip& returnData()	const;
 
 private:
 	DataChip	data_;

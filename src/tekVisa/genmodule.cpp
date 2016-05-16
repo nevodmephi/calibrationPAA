@@ -1,6 +1,6 @@
 #include "genmodule.h"
 
-GenModule::GenModule(const std::__cxx11::string &ip)
+GenModule::GenModule(const std::string &ip)
 	:	ip_(ip)	{
 
 	active = false;

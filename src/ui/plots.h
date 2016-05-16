@@ -14,16 +14,16 @@ class Plots : public QWidget, public Observer	{
 	Q_OBJECT
 
 public:
-	using	qvecdoubPair	=	std::pair<QVector<double>,	QVector<double>>;
+	using	QvecdoubPair	=	std::pair<QVector<double>,	QVector<double>>;
 
 	explicit Plots(PaaModule *chip, QWidget *parent = nullptr);
 	~Plots();
 
 	void	update(const Subject *subject);
-	void	allClear();
+	void	clearAll();
 
 public slots:
-	void	dataUpdate();
+	void	updateAll();
 
 protected slots:
 	void	renderFirst();
@@ -40,9 +40,9 @@ private:
 	QCustomPlot*	ampFirst_;
 	QCustomPlot*	ampSecond_;
 	QCustomPlot*	form_;
-	qvecdoubPair	ampFirstData_;
-	qvecdoubPair	ampSecondData_;
-	qvecdoubPair	formData_;
+	QvecdoubPair	ampFirstData_;
+	QvecdoubPair	ampSecondData_;
+	QvecdoubPair	formData_;
 
 	QHBoxLayout*	ampHLayout_;
 	QVBoxLayout*	formVLayout_;

@@ -9,11 +9,11 @@ Plots::Plots(PaaModule *chip, QWidget *parent)
 	ampHLayout_	=	new QHBoxLayout;
 	formVLayout_	=	new QVBoxLayout;
 	isRescaleButton_	= new QCheckBox("auto Rescale", this);
-	ampHLayout_->	addWidget(ampFirst_);
-	ampHLayout_->	addWidget(ampSecond_);
-	formVLayout_->	addWidget(isRescaleButton_);
-	formVLayout_->	addLayout(ampHLayout_);
-	formVLayout_->	addWidget(form_);
+	ampHLayout_->addWidget(ampFirst_);
+	ampHLayout_->addWidget(ampSecond_);
+	formVLayout_->addWidget(isRescaleButton_);
+	formVLayout_->addLayout(ampHLayout_);
+	formVLayout_->addWidget(form_);
 
 	setLayout(formVLayout_);
 	createFirst();
@@ -51,7 +51,7 @@ void Plots::update(const Subject *subject)	{
 //	}
 }
 
-void Plots::dataUpdate()	{
+void Plots::updateAll()	{
 //	std::mutex	block;
 //	block.lock();
 //	if (chip_->getDataUpdate() == true)		{
@@ -77,7 +77,7 @@ void Plots::dataUpdate()	{
 //	block.unlock();
 }
 
-void Plots::allClear()	{
+void Plots::clearAll()	{
 //	ampFirstData_.first.clear();
 //	ampFirstData_.second.clear();
 //	ampSecondData_.first.clear();

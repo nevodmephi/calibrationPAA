@@ -27,7 +27,6 @@ void	Master::update(const Subject *subject)	{
 			Record record = clientQueue_->getRecord();
 			std::cout << record.address << "\t" << record.value << std::endl;
 		}
-
 	}
 }
 

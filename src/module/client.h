@@ -5,9 +5,9 @@
 #include <thread>
 #include <memory>
 #include <cstdint>
-#include <iostream>
 
 #include "../observer/observer.h"
+
 
 class Client : public QObject, public Subject	{
 	Q_OBJECT
@@ -21,8 +21,8 @@ public:
 		null
 	};
 
-	using QTcpSocketPtr		= std::unique_ptr<QTcpSocket>;
-	using QHostAddressPtr	= std::unique_ptr<QHostAddress>;
+	using QTcpSocketPtr		= std::shared_ptr<QTcpSocket>;
+	using QHostAddressPtr	= std::shared_ptr<QHostAddress>;
 
 	Client(const std::string&	address, uint16_t	port);
 	~Client();
@@ -35,8 +35,8 @@ public:
 	void		writeRegister3000(uint32_t address, uint32_t data);
 	void		writeRegister3002(uint32_t address, uint32_t data);
 
-	const std::vector<unsigned char>&	getData()		const;
-	Message								getMessage()	const;
+	const std::vector<uchar>&	getData()		const;
+	Message							getMessage()	const;
 
 protected slots:
 	void		onSocketConnected();

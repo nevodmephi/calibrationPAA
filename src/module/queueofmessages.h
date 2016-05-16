@@ -36,13 +36,13 @@ public:
 	void	runStack();
 	void	clearData();
 
-	const Record&					getRecord()		const;
-	Message							getMessage()	const;
-	const std::vector<unsigned char>&	getData()		const;
+	const Record&				getRecord()		const;
+	Message						getMessage()	const;
+	const std::vector<uchar>&	getData()		const;
 
 protected:
 	void	writeRegister(const Record&	record);
-	int		fillValuesInCommandsHaveBeenDone(const std::vector<unsigned char>&	data, int commandNumber);
+	int		fillValuesInCommandsHaveBeenDone(const std::vector<uchar>&	data, int commandNumber);
 
 private:
 	ClientPtr									clientReg_;
@@ -51,8 +51,7 @@ private:
 	std::vector<std::pair<Record, ObserverPtr>>	commandsHaveBeenDone_;
 	Record										answerRecord_;
 	Message										message_;
-	std::vector<unsigned char>					data_;
-//	string			ip_;
+	std::vector<uchar>							data_;
 };
 
 #endif // STACKOFMESSAGES_H

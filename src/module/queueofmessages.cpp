@@ -10,8 +10,8 @@ QueueOfMessages::QueueOfMessages(const std::string& ip)	{
 }
 
 QueueOfMessages::~QueueOfMessages()	{
-//	clientReg_->detach(this);
-//	clientData_->detach(this);
+	clientReg_->detach(this);
+	clientData_->detach(this);
 }
 
 void	QueueOfMessages::update(const Subject* subject)	{
@@ -32,6 +32,9 @@ void	QueueOfMessages::update(const Subject* subject)	{
 					notify(commandsHaveBeenDone_[i].second.get());
 				}
 			}
+			commandsHaveBeenDone_.erase(commandsHaveBeenDone_.begin() + commandNumberBegin,
+										commandsHaveBeenDone_.begin() + commandNumberEnd);
+			commandNumberEnd -= commandNumberEnd - commandNumberBegin;
 			commandNumberBegin = commandNumberEnd;
 			if (commandsHaveBeenDone_.empty() == true)	{
 				commandNumberBegin	= 0;
@@ -64,17 +67,15 @@ void	QueueOfMessages::update(const Subject* subject)	{
 		if (clientData_->getMessage() == Client::Message::readyRead)	{
 			static int packetCount = 0;
 			message_	= Message::dataRead;
-//			if (packetCount < 200)	{
-//				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
-//				packetCount++;
-//			}
-//			if (packetCount == 200)	{
-//				packetCount = 0;
-//				notify();
-//				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
-//			}
-			data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
-			notify();
+            if (packetCount < 200)	{
+				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
+				packetCount++;
+			}
+            if (packetCount == 200)	{
+				packetCount = 0;
+				notify();
+				data_.insert(data_.end(), clientData_->getData().begin(), clientData_->getData().end());
+			}
 		}
 	}
 }
@@ -95,7 +96,6 @@ void	QueueOfMessages::addCommandToStack(const Record &record, ObserverPtr sender
 
 void	QueueOfMessages::runStack()	{
 	while (!commandsWillBeDone_.empty())	{
-//		clientReg_->writeRegister3000(commands_.front().address, commands_.front().value);
 		writeRegister(commandsWillBeDone_.front().first);
 		commandsHaveBeenDone_.push_back(commandsWillBeDone_.front());
 		commandsWillBeDone_.pop();
@@ -114,9 +114,7 @@ void	QueueOfMessages::writeRegister(const Record& record)	{
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
-int QueueOfMessages::fillValuesInCommandsHaveBeenDone(const std::vector<unsigned char> &data, int commandNumber)	{
-//	for (auto& item : commandsHaveBeenDone_)
-//		item.first.value = 13232;
+int QueueOfMessages::fillValuesInCommandsHaveBeenDone(const std::vector<uchar> &data, int commandNumber)	{
 	int command = commandNumber;
 	for (int i = 0; i < (int)data.size(); i++)	{
 		if (data[i] == 0x0b &&
@@ -162,10 +160,10 @@ const Record&	QueueOfMessages::getRecord() const	{
 	return	answerRecord_;
 }
 
-QueueOfMessages::Message	QueueOfMessages::getMessage()	const	{
+QueueOfMessages::Message	QueueOfMessages::getMessage() const	{
 	return	message_;
 }
 
-const std::vector<unsigned char>&	QueueOfMessages::getData() const	{
+const std::vector<uchar> &QueueOfMessages::getData() const	{
 	return	data_;
 }

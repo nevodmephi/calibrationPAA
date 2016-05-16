@@ -15,20 +15,19 @@ public:
 	using MasterPtr = std::shared_ptr<Master>;
 	using QueuePtr	= std::shared_ptr<QueueOfMessages>;
 
-	Host(const std::string&	ip);
+	explicit Host(const std::string&	ip);
 	~Host();
 
-	void	update(const Subject* subject);
+	void		update(const Subject* subject);
 
 	MasterPtr	addMaster(uint32_t	numberMaster);
 	void		deleteMaster(uint32_t	numberMaster);
-	void		connectToHost();	//
-	void		disconnectFromHost();	//
+	void		connectToHost();
+	void		disconnectFromHost();
 	void		readState();
 	void		runQueue();
 
 	void		writeBanOfTimestamps(bool	ban);
-//	void		writeRegisterOfMasks();
 	void		writeTestRegister(uint16_t	data);
 	void		writeCoarseReset(const std::array<bool, 4>&	resetLink);
 	void		writeResolutionOfLinks(const std::array<bool, 4>&	resolutionLink);
@@ -39,12 +38,13 @@ public:
 	void		writeRegisterOfReadData(const std::array<bool, 4>&	readLink);
 	void		writeResolutionAndForbidOfData(bool resolution);
 	void		writeClearDataBuffer(bool clear);
+	void		readOpticalLengthOfLink(int numberLink);
 
 	void		initializeTable(uint32_t	numberMaster,	const std::vector<uint32_t>&	numbersOfChannels);
 	void		initializeTable(uint32_t	numberMaster);
 	void		writeSleep(uint32_t milliseconds);
 
-	QueuePtr		getQueue();
+	QueuePtr		getQueue() const;
 	Record			getResult()	const;
 	HostRegisters	getRegisters()	const;
 

@@ -50,6 +50,7 @@ private:
 	CalculationPtr	calculation_;
 
 	std::pair<int, int>	howChipChannel_;
+	std::string			pathToSave_;
 };
 
 #endif // CALIBRATION_H
