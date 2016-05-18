@@ -42,6 +42,7 @@ void	Processing::controlQueue()	{
 //			file.open("/home/main/datda", std::ios_base::app | std::ios_base::binary);
 //			file.write(reinterpret_cast<const char*>(buffer_.front().data()), buffer_.front().size());
 //			file.close();
+			data_;
 
 			saveDataHowOldProgram(data_, pathToSave_, number);
 			i++;

@@ -53,8 +53,9 @@ HEADERS  += \
         src/calibration/processing.h \
         src/calibration/calculation.h
 
-LIBS        +=	-L$$PWD/lib/ -lvisa
-LIBS         += -lqcustomplot
+#LIBS        +=	-L$$PWD/lib/ -lvisa
+LIBS        += -lvisa
+LIBS        += -lqcustomplot
 
 release {
 	QMAKE_CXXFLAGS_RELEASE	-= -O1

@@ -100,7 +100,7 @@ void MainWindow::initializeLayouts()	{
 	controlHLayout_->	addWidget(endButton_);
 	controlHLayout_->	addWidget(exitButton_);
 	saveVLayout_->		addRow("Path to save folder:", pathToSaveL_);
-	saveVLayout_->		addRow("Name chip", numberChipL_);\
+	saveVLayout_->		addRow("Name chip", numberChipL_);
 	rightVLayout_->		addLayout(controlHLayout_);
 	rightVLayout_->		addLayout(saveVLayout_);
 	rightVLayout_->		addWidget(isCountChCheck_);
@@ -123,7 +123,7 @@ void MainWindow::initializeElements()	{
 	showSettings_ =	new QPushButton("Show Settings", this);
 	showTables_ =	new QPushButton("Show Tables", this);
 	stopButton_ =	new QPushButton("Stop Calibration", this);
-	pathToSaveL_ =	new QLineEdit("/home/main/data/", this);
+	pathToSaveL_ =	new QLineEdit("/home/main/data", this);
 	numberChipL_ =	new QLineEdit(this);
 	isCountChCheck_ =new QCheckBox(QString("One Or Two Calibration"), this);
 
@@ -137,6 +137,10 @@ void MainWindow::addToList(const string &addStr)	{
 }
 
 void MainWindow::startButtonClick()	{
+	calibration_->setPathToSave(pathToSaveL_->text().toStdString());
+	calibration_->openSessions();
+	initializeFirst();
+
 //	module_->setChannel( settings_->currentChannel() + 1);
 //	bool status = module_->openSession();
 //	if (status == true)
@@ -152,6 +156,7 @@ void MainWindow::startButtonClick()	{
 }
 
 void MainWindow::endButtonClick()	{
+	initializeSecond();
 //	module_->closeSession();
 //	chip_->closeSession();
 //	module_->notify();
@@ -165,6 +170,7 @@ void MainWindow::showSettingsClick()	{
 }
 
 void MainWindow::goButtonClick()	{
+	calibration_->sendOneSignal(0, 1000);
 //	if (numberChipL_->text().isEmpty() == true)
 //		return;
 //	int howChipChannel = chip_->searchAndSetChipChannel();
@@ -203,6 +209,7 @@ void MainWindow::goButtonClick()	{
 }
 
 void MainWindow::stopButtonClick()	{
+	calibration_->stop(0);
 //	chip_->stopCalibration();
 //	timerUpdate_->stop();
 }
@@ -224,7 +231,42 @@ void MainWindow::writeToHomingTable()	{
 //		for (int j = 0; j < 4; j++)	{
 //			homingItems_[i][j].setText(
 //						QString::number(calculation_->returnHoming()[i][j]));
-//		}
+	//		}
+}
+
+void MainWindow::initializeFirst()	{
+	calibration_->writeRegister(0x40000e, 15, Record::Type::Zero);
+	calibration_->writeRegister(0x200024, 1, Record::Type::Zero);
+//	calibration_->writeRegister(0x1000000 + 0x200024, 1, Record::Type::Zero);
+//	calibration_->writeRegister(0x2000000 + 0x200024, 1, Record::Type::Zero);
+//	calibration_->writeRegister(0x3000000 + 0x200024, 1, Record::Type::Zero);
+}
+
+void MainWindow::initializeSecond()	{
+	calibration_->writeRegister(0x01, 255, Record::Type::Two);
+
+	calibration_->writeRegister(0x200000, 0x1, Record::Type::Zero);
+	calibration_->writeRegister(0x200000, 0x2, Record::Type::Zero);
+	calibration_->writeRegister(0x90000, 0, Record::Type::Zero);
+	calibration_->writeRegister(0xb0000, 0, Record::Type::Zero);
+	calibration_->writeRegister(0x200006, 1, Record::Type::Zero);
+	calibration_->writeRegister(0x20000a, 10, Record::Type::Zero);
+	calibration_->writeRegister(0x20000c, 15, Record::Type::Zero);
+	calibration_->writeRegister(0x200002, 1, Record::Type::Zero);
+	calibration_->writeRegister(0x90018, 1, Record::Type::Zero);
+	calibration_->writeRegister(0x9001a, 10, Record::Type::Zero);
+	calibration_->writeRegister(0xb0018, 1, Record::Type::Zero);
+	calibration_->writeRegister(0xb001a, 1, Record::Type::Zero);
+	calibration_->initializeTable(0);
+	calibration_->writeRegister(0x90010, 2058, Record::Type::Zero);
+	calibration_->writeRegister(0x90014, 2058, Record::Type::Zero);
+	calibration_->writeRegister(0xb0010, 2058, Record::Type::Zero);
+	calibration_->writeRegister(0xb0014, 2058, Record::Type::Zero);
+	calibration_->writeRegister(0x200200, 0x1, Record::Type::Zero);
+
+	calibration_->writeRegister(0x10, 1, Record::Type::Two);
+	calibration_->writeRegister(0x400020, 1, Record::Type::Zero);
+	calibration_->writeRegister(0x10, 0, Record::Type::Two);
 }
 
 void MainWindow::writeToDataTable()	{

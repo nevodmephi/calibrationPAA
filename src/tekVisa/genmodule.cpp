@@ -1,5 +1,7 @@
 #include "genmodule.h"
 
+#include <iostream>	//TODO
+
 GenModule::GenModule(const std::string &ip)
 	:	ip_(ip)	{
 
@@ -41,8 +43,8 @@ void GenModule::loadSettigs()	{
 bool GenModule::openSession()	{
 	ViStatus status;
 	ViUInt32 numInit;
-//	const ViString resName = (const ViString)"USB?*INSTR{VI_ATTR_MANF_ID==0x0699}";
-	const ViString resName = const_cast<const ViString>(ip_.c_str());
+	const ViString resName = (const ViString)"USB?*INSTR{VI_ATTR_MANF_ID==0x0699}";
+//	const ViString resName = const_cast<const ViString>(ip_.c_str());
 	ViChar desc[VI_FIND_BUFLEN+1];
 	status = viOpenDefaultRM(&resMN_);
 	if (status != VI_SUCCESS)	{
@@ -50,13 +52,13 @@ bool GenModule::openSession()	{
 		return false;
 	}
 	status = viFindRsrc(resMN_, resName , &mainFList_, &numInit, desc);
-//	std::cout << "viFindRsrc errCode = " << status << std::endl;
+	std::cout << "viFindRsrc errCode = " << status << std::endl;
 	if (status != VI_SUCCESS)	{
 //		pushAction(genActions::init,status);
 		return false;
 	}
 	status = viOpen(resMN_, desc, VI_NULL, VI_NULL, &session_);
-//	std::cout << "viOpen errCode = " << status << std::endl;
+	std::cout << "viOpen errCode = " << status << std::endl;
 	if (status != VI_SUCCESS)	{
 //		pushAction(genActions::init,status);
 		return false;

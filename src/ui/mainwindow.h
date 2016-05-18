@@ -46,6 +46,9 @@ protected:
 	void	writeToDataTable();
 	void	writeToHomingTable();
 
+	void	initializeFirst();
+	void	initializeSecond();
+
 private:
 	Calibration	*calibration_;
 //	tekModule	*module_;

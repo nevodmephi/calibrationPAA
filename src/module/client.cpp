@@ -32,7 +32,7 @@ void	Client::onSocketReadyRead()	{
 	message_ = Message::readyRead;
 	QByteArray	array = socket_->readAll();
 	data_.assign(array.begin(), array.end());
-//	std::cout << data_.size() << std::endl;
+	std::cout << data_.size() << std::endl;
 	this->notify();
 //	std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime_));
 //	std::this_thread::sleep_for(std::chrono::milliseconds(100));

@@ -3,7 +3,6 @@
 
 #include <memory>
 
-#include "processing.h"
 #include "calculation.h"
 #include "../module/paamodule.h"
 #include "../tekVisa/genmodule.h"
@@ -12,7 +11,6 @@ class Calibration	{
 public:
 	using	GenModulePtr	= std::shared_ptr<GenModule>;
 	using	PaaModulePtr	= std::shared_ptr<PaaModule>;
-	using	ProcessingPtr	= std::shared_ptr<Processing>;
 	using	CalculationPtr	= std::shared_ptr<Calculation>;
 
 	enum class mode
@@ -36,6 +34,13 @@ public:
 	std::shared_ptr<GenModule>	getGenModule()	const;
 	std::shared_ptr<PaaModule>	getPaaModule()	const;
 
+
+	//TODO
+	void	writeRegister(uint32_t	address, uint32_t	data, Record::Type	type);
+	void	initializeTable(uint32_t	numberMaster);
+	void	stop(int channel);
+	void	sendOneSignal(int channel, int amp);
+
 protected:
 	void	searchThreshold();
 	void	setThreshold(int numberChipChannel, int codeThresh);
@@ -46,7 +51,6 @@ protected:
 private:
 	GenModulePtr	genModule_;
 	PaaModulePtr	paaModule_;
-	ProcessingPtr	processing_;
 	CalculationPtr	calculation_;
 
 	std::pair<int, int>	howChipChannel_;
